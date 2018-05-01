@@ -1,0 +1,21 @@
+{
+  "apps": [
+    {
+      "name": "iw-nikaple-server",
+      "script": "server.js",
+      "args": [],
+      "log_date_format": "YYYY-MM-DD HH:mm Z",
+      "cwd": "./",
+      "exec_mode": "cluster",
+      "instances": "max",
+      "env": {},
+      "env_production": {
+        "NODE_ENV": "production"
+      },
+      "env_development": {
+        "NODE_ENV": "development",
+        "GM_SERVER_DEBUG": true
+      }
+    }
+  ]
+}

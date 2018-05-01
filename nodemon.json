@@ -1,0 +1,6 @@
+{
+  "env": {
+    "MONGO_LOCALHOST": true,
+    "GM_SERVER_DEBUG": true
+  }
+}
