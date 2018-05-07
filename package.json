@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "chalk": "^2.4.1",
+    "lodash": "4.8.2",
     "mongoose": "^5.0.17",
     "mongoose-user": "^0.0.1"
   }
