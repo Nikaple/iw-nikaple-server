@@ -13,8 +13,6 @@ fs
   .filter(file => file.includes('.js'))
   .forEach(file => require(join(models, file)))
 
-connection.once('open', listen)
-
 const managers = require('./src/managers')
 const server = new Server(function(client) {
   managers.lobby.addClient(client)
@@ -32,6 +30,7 @@ function connect() {
     .connect(config.db, {
       reconnectInterval: config.dbReconnectInterval,
     })
+    .then(listen)
     .catch(err => {
       console.log('Mongo connection error... Reconnecting...')
     })
