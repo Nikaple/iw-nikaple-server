@@ -20,6 +20,8 @@ module.exports = {
   // 登出
   LOGOUT: 'logout',
 
+  // 获取房间列表
+  LOBBY_FETCH: 'lobby_fetch',
   // 成功创建房间
   LOBBY_CREATE_SUCCESS: 'lobby_create_success',
   // 成功加入房间
