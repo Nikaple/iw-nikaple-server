@@ -13,11 +13,7 @@ fs
   .filter(file => file.includes('.js'))
   .forEach(file => require(join(models, file)))
 
-connection
-  .on('error', () => {
-    console.log('Mongo connection error... Reconnecting...')
-  })
-  .once('open', listen)
+connection.once('open', listen)
 
 const managers = require('./src/managers')
 const server = new Server(function(client) {
@@ -32,8 +28,12 @@ function listen() {
 }
 
 function connect() {
-  mongoose.connect(config.db, {
-    reconnectInterval: config.dbReconnectInterval,
-  })
+  mongoose
+    .connect(config.db, {
+      reconnectInterval: config.dbReconnectInterval,
+    })
+    .catch(err => {
+      console.log('Mongo connection error... Reconnecting...')
+    })
   return mongoose.connection
 }
