@@ -14,8 +14,9 @@ fs
   .forEach(file => require(join(models, file)))
 
 connection
-  .on('error', console.log)
-  .on('disconnected', connect)
+  .on('error', () => {
+    console.log('Mongo connection error... Reconnecting...')
+  })
   .once('open', listen)
 
 const managers = require('./src/managers')

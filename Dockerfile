@@ -13,4 +13,4 @@ RUN yarn --registry https://registry.npm.taobao.org --silent
 COPY . /app
 EXPOSE 3738
 
-CMD ["yarn", "prod"]
+CMD ["yarn", "docker:dev"]
