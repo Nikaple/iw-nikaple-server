@@ -11,15 +11,15 @@ const COMMAND = require('../../command')
  * @param {string} data.command
  */
 module.exports = (client, { name, password }) => {
-  if (!client.clientName) {
-    client.send(COMMAND.LOGIN_NEEDED)
-  }
-
-  const lobby = lobbyManager.createLobby({
+  const lobby = lobbyManager.createLobby(client, {
     name,
     password,
     host: client,
   })
+
+  if (lobby === null) {
+    return
+  }
 
   client.set('currentLobbyId', lobby.id)
   lobbyManager.broadcast(COMMAND.LOBBY_CREATE_SUCCESS, {

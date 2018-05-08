@@ -3,7 +3,16 @@ const userPlugin = require('mongoose-user')
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
-  name: { type: String, default: '', minlength: 1, maxlength: 40 },
+  name: {
+    type: String,
+    default: '',
+    validate: {
+      validator: v => {
+        return /^[a-zA-Z][a-zA-Z0-9_- ]{4,30}$/.test(v)
+      },
+      msg: 'username_not_valid',
+    },
+  },
   email: { type: String, default: '' },
   hashed_password: { type: String, default: '' },
   salt: { type: String, default: '' },

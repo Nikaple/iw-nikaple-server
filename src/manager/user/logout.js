@@ -12,7 +12,12 @@ const userManager = require('./_manager')
  * @param {string} data.command
  */
 module.exports = (client, data) => {
+  if (!userManager.getClients().includes(client)) {
+    client.send(COMMAND.LOGIN_NEEDED)
+    return
+  }
+  userManager.removeClient(client.clientId)
   client.send(COMMAND.LOGOUT, {
-    msg: 'Successfully logout!',
+    reason: 'user_intent',
   })
 }

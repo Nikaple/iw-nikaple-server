@@ -33,7 +33,7 @@ class GameManager extends ClientManager {
     return this.clientIdMap[clientId]
   }
 
-  groupBroadcast(currentClient, command, data) {
+  groupBroadcast(currentClient, command, data, filter = client => true) {
     if (typeof data === 'undefined') {
       data = command
     } else {
@@ -43,6 +43,7 @@ class GameManager extends ClientManager {
     const groupId = this.getGroupIdByClientId(currentClient.clientId)
     this.groups[groupId].clients
       .filter(client => client !== currentClient)
+      .filter(client => filter(client))
       .forEach(client => {
         client.send(data)
       })
@@ -50,6 +51,13 @@ class GameManager extends ClientManager {
 }
 
 const gameManager = new GameManager()
+
+gameManager.on('clientDropped', client => {
+  gameManager.groupBroadcast(client, COMMAND.PLAYER_DROP, {
+    name: client.clientName,
+  })
+})
+
 gameManager.setTickMode(true)
 gameManager.setTickRate(20)
 gameManager.startTicking()

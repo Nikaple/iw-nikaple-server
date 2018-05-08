@@ -15,6 +15,8 @@ module.exports = {
   LOGIN_SUCCESS: 'login_success',
   // 登录失败
   LOGIN_FAILED: 'login_failed',
+  // 已经登录
+  LOGIN_ALREADY: 'login_already',
   // 登出
   LOGOUT: 'logout',
 
@@ -34,9 +36,19 @@ module.exports = {
   LOBBY_SAME_ID: 'lobby_same_id',
   // 非房主不能开始游戏
   LOBBY_NOT_AUTHORIZED: 'lobby_not_authorized',
+  // 房间已满
+  LOBBY_IS_FULL: 'lobby_is_full',
+  // 已经在房间中了
+  LOBBY_ALREADY_JOINED: 'lobby_already_joined',
 
   // 开始游戏
   GAME_START: 'game_start',
   // 同步
   GAME_SYNC: 'game_sync',
+
+  // 玩家掉线
+  PLAYER_DROP: 'player_drop',
+
+  // 未知错误
+  UNKNOWN_ERROR: 'unknown_error',
 }

@@ -7,4 +7,6 @@ module.exports = {
   LOBBY_SAME_ID: -3,
   // 非房主，权限不足
   LOBBY_NOT_AUTHORIZED: -4,
+  // 房间已满
+  LOBBY_IS_FULL: -5,
 }

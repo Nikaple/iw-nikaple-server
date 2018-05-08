@@ -12,20 +12,34 @@ const COMMAND = require('../../command')
  */
 module.exports = (client, data) => {
   const { name, password } = data
+  const validPassword = /^[\w\W]{4,}$/
+  if (!validPassword.test(password)) {
+    client.send(COMMAND.REGISTER_FAILED, {
+      msg: 'password_not_valid',
+    })
+    return
+  }
   User.findOne({ name }).then(user => {
     if (user) {
       client.send(COMMAND.REGISTER_FAILED, {
-        msg: 'Username already exists!',
+        msg: 'username_exists',
       })
       return
     }
     const newUser = new User({ name, password, skipValidation: true })
-    newUser.save().then(user => {
-      client.clientId = user._id.toString()
-      client.send(COMMAND.REGISTER_SUCCESS, {
-        id: client.clientId,
-        name,
+    newUser
+      .save()
+      .then(user => {
+        client.clientId = user._id.toString()
+        client.send(COMMAND.REGISTER_SUCCESS, {
+          id: client.clientId,
+          name,
+        })
       })
-    })
+      .catch(err => {
+        client.send(COMMAND.REGISTER_FAILED, {
+          msg: err.errors.name.message,
+        })
+      })
   })
 }

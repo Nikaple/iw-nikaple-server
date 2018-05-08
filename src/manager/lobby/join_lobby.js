@@ -13,28 +13,16 @@ const ERROR = require('../../error')
  * @param {string} data.command
  */
 module.exports = (client, { lobbyId, password }) => {
-  if (!client.clientName) {
-    client.send(COMMAND.LOGIN_NEEDED)
-    return
-  }
-
-  const lobby = lobbyManager.joinLobby({
+  const lobby = lobbyManager.joinLobby(client, {
     id: lobbyId,
     password,
     guest: client,
   })
-  if (lobby === ERROR.LOBBY_NOT_EXISTS) {
-    client.send(COMMAND.LOBBY_NOT_EXISTS)
+
+  if (lobby === null) {
     return
   }
-  if (lobby === ERROR.LOBBY_PASS_NOT_VALID) {
-    client.send(COMMAND.LOBBY_PASS_NOT_VALID)
-    return
-  }
-  if (lobby === ERROR.LOBBY_SAME_ID) {
-    client.send(COMMAND.LOBBY_SAME_ID)
-    return
-  }
+
   client.set('currentLobbyId', lobby.id)
   lobby.broadcast(COMMAND.LOBBY_JOIN_SUCCESS, {
     lobbyId: lobby.id,
