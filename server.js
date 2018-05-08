@@ -7,6 +7,10 @@ const config = require('./config')
 const models = join(__dirname, 'src/model')
 const connection = connect()
 
+connection
+  .once('connected', listen)
+  .on('disconnected', () => setTimeout(connect, config.dbReconnectInterval))
+
 // Bootstrap models
 fs
   .readdirSync(models)
@@ -26,13 +30,8 @@ function listen() {
 }
 
 function connect() {
-  mongoose
-    .connect(config.db, {
-      reconnectInterval: config.dbReconnectInterval,
-    })
-    .then(listen)
-    .catch(err => {
-      console.log('Mongo connection error... Reconnecting...')
-    })
+  mongoose.connect(config.db).catch(err => {
+    console.log('Mongo connection error... Reconnecting...')
+  })
   return mongoose.connection
 }
