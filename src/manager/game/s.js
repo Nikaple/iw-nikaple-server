@@ -2,7 +2,13 @@
 
 const gameManager = require('./_manager')
 const CMD = require('../../cmd')
-
+/**
+ *
+ *
+ * @param {Client} client
+ * @param {object} data
+ * @param {string} data.cmd
+ */
 module.exports = (client, data) => {
   delete data.cmd
   const room = (data && data.player && data.player.room) || ''

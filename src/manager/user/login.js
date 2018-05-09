@@ -4,6 +4,13 @@ const User = mongoose.model('User')
 const CMD = require('../../cmd')
 const userManager = require('./_manager')
 
+/**
+ *
+ *
+ * @param {Client} client
+ * @param {object} data
+ * @param {string} data.cmd
+ */
 const verifyLogin = (client, user, name, password) => {
   const userId = user._id.toString()
   if (user.authenticate(password)) {
@@ -20,6 +27,8 @@ const verifyLogin = (client, user, name, password) => {
     userManager.addUser(userId, client)
     client.clientId = userId
     client.clientName = user.name
+    client.ip = client.socket.remoteAddress
+    client.port = client.socket.remotePort
     client.send(CMD.LOGIN_SUCCESS, {
       id: user._id,
       name: user.name,

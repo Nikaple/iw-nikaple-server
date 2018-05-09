@@ -4,12 +4,12 @@ const lobbyManager = require('./_manager')
 /**
  *
  *
- * @param {Client} socket
+ * @param {Client} client
  * @param {object} data
  * @param {string} data.cmd
  */
-module.exports = (socket, data) => {
-  socket.send(CMD.LOBBY_FETCH, {
+module.exports = (client, data) => {
+  client.send(CMD.LOBBY_FETCH, {
     lobbies: Object.keys(lobbyManager.lobbies)
       .map(key => lobbyManager[key])
       .map(lobby => ({
