@@ -6,7 +6,8 @@ services:
     volumes:
       - ./:/app
     ports:
-      - "3738:3738"
+      - "3738:3738/tcp"
+      - "3738:3738/udp"
     links:
       - mongo
     depends_on:

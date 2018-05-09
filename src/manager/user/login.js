@@ -42,7 +42,7 @@ const verifyLogin = (client, user, name, password) => {
   }
 
   client.send(CMD.LOGIN_FAILED, {
-    msg: 'Wrong password!',
+    msg: 'wrong_password',
   })
 }
 /**
@@ -56,7 +56,7 @@ module.exports = (client, { name, password, udp_port }) => {
   User.findOne({ name }).then(user => {
     if (!user) {
       client.send(CMD.LOGIN_FAILED, {
-        msg: 'Username does not exist!',
+        msg: 'username_exists',
       })
       return
     }

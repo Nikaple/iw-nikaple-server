@@ -20,9 +20,9 @@ class UdpServer {
     this.server.on('message', (msg, rinfo) => {
       console.log(
         chalk.yellowBright(
-          `${new Date().toLocaleString()}: Receiving from ${rinfo.address}:${
-            rinfo.port
-          }: ${JSON.stringify(msg.toJSON())}`
+          `Receiving from ${rinfo.address}:${rinfo.port}: ${JSON.stringify(
+            msg.toJSON()
+          )}`
         )
       )
       const buffer = ByteBuffer.wrap(msg, 'utf-8', ByteBuffer.LITTLE_ENDIAN)
@@ -66,7 +66,7 @@ class UdpServer {
         udpServer.send(message, udpPort, ip, () => {
           console.log(
             chalk.greenBright(
-              `${new Date().toLocaleString()}:    Msg sent to ${ip}:${udpPort}: ${JSON.stringify(
+              `   Msg sent to ${ip}:${udpPort}: ${JSON.stringify(
                 message.toJSON()
               )}`
             )

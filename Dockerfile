@@ -11,6 +11,8 @@ RUN npm install -g pm2 --registry=https://registry.npm.taobao.org --loglevel=err
 RUN yarn --registry https://registry.npm.taobao.org
 
 COPY . /app
-EXPOSE 3738
+
+EXPOSE 3738/tcp
+EXPOSE 3738/udp
 
 CMD ["yarn", "docker:dev"]
