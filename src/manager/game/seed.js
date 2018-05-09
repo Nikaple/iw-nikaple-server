@@ -2,5 +2,5 @@
 
 module.exports = (client, data) => {
   const seed = Math.random()
-  gameManager.groupBroadcast(client, COMMAND.GET_SEED, { seed })
+  gameManager.groupBroadcast(client, CMD.GET_SEED, { seed })
 }

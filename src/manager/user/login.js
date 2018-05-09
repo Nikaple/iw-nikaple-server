@@ -1,7 +1,7 @@
 const { Client } = require('../../../lib/patchwire')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
-const COMMAND = require('../../command')
+const CMD = require('../../cmd')
 const userManager = require('./_manager')
 
 const verifyLogin = (client, user, name, password) => {
@@ -9,25 +9,25 @@ const verifyLogin = (client, user, name, password) => {
   if (user.authenticate(password)) {
     const loggedClient = userManager.getClientByUserId(userId)
     if (loggedClient === client) {
-      client.send(COMMAND.LOGIN_ALREADY)
+      client.send(CMD.LOGIN_ALREADY)
       return
     }
     if (loggedClient && loggedClient.clientName === name) {
-      loggedClient.send(COMMAND.LOGOUT, {
+      loggedClient.send(CMD.LOGOUT, {
         reason: 'another_device',
       })
     }
     userManager.addUser(userId, client)
     client.clientId = userId
     client.clientName = user.name
-    client.send(COMMAND.LOGIN_SUCCESS, {
+    client.send(CMD.LOGIN_SUCCESS, {
       id: user._id,
       name: user.name,
     })
     return
   }
 
-  client.send(COMMAND.LOGIN_FAILED, {
+  client.send(CMD.LOGIN_FAILED, {
     msg: 'Wrong password!',
   })
 }
@@ -36,12 +36,12 @@ const verifyLogin = (client, user, name, password) => {
  *
  * @param {Client} client
  * @param {object} data
- * @param {string} data.command
+ * @param {string} data.cmd
  */
 module.exports = (client, { name, password }) => {
   User.findOne({ name }).then(user => {
     if (!user) {
-      client.send(COMMAND.LOGIN_FAILED, {
+      client.send(CMD.LOGIN_FAILED, {
         msg: 'Username does not exist!',
       })
       return

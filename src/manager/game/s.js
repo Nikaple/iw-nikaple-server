@@ -1,8 +1,10 @@
+// This is the handler for game sync
+
 const gameManager = require('./_manager')
-const COMMAND = require('../../command')
+const CMD = require('../../cmd')
 
 module.exports = (client, data) => {
-  delete data.command
+  delete data.cmd
   const room = (data && data.player && data.player.room) || ''
   if (room !== '') {
     client.set('currentRoom', data.player.room)
@@ -10,9 +12,9 @@ module.exports = (client, data) => {
   const currentRoom = client.get('currentRoom')
   gameManager.groupBroadcast(
     client,
-    COMMAND.GAME_SYNC,
+    CMD.GAME_SYNC,
     {
-      name: client.clientName,
+      idx: client.get('groupIndex'),
       ...data,
     },
     client => {

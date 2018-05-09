@@ -2,7 +2,7 @@ const { Client } = require('../../../lib/patchwire')
 const lobbyManager = require('./_manager')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
-const COMMAND = require('../../command')
+const CMD = require('../../cmd')
 const ERROR = require('../../error')
 
 /**
@@ -10,7 +10,7 @@ const ERROR = require('../../error')
  *
  * @param {Client} client
  * @param {object} data
- * @param {string} data.command
+ * @param {string} data.cmd
  */
 module.exports = (client, { lobbyId, password }) => {
   const lobby = lobbyManager.joinLobby(client, {
@@ -24,7 +24,7 @@ module.exports = (client, { lobbyId, password }) => {
   }
 
   client.set('currentLobbyId', lobby.id)
-  lobby.broadcast(COMMAND.LOBBY_JOIN_SUCCESS, {
+  lobby.broadcast(CMD.LOBBY_JOIN_SUCCESS, {
     lobbyId: lobby.id,
     guest: client.clientName,
   })

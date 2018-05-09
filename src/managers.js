@@ -23,10 +23,10 @@ const loadManager = managersPath => {
       ? require(managerFile)
       : new ClientManager()
     const currentHandlers = loadHandler(managerPath)
-    Object.keys(currentHandlers).forEach(commandName => {
+    Object.keys(currentHandlers).forEach(cmdName => {
       currentManager.addCommandListener(
-        commandName,
-        currentHandlers[commandName]
+        cmdName,
+        currentHandlers[cmdName]
       )
     })
     managers[name] = currentManager

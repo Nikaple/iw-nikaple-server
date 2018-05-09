@@ -1,27 +1,27 @@
 const { Client } = require('../../../lib/patchwire')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
-const COMMAND = require('../../command')
+const CMD = require('../../cmd')
 
 /**
  *
  *
  * @param {Client} client
  * @param {object} data
- * @param {string} data.command
+ * @param {string} data.cmd
  */
 module.exports = (client, data) => {
   const { name, password } = data
   const validPassword = /^[\w\W]{4,}$/
   if (!validPassword.test(password)) {
-    client.send(COMMAND.REGISTER_FAILED, {
+    client.send(CMD.REGISTER_FAILED, {
       msg: 'password_not_valid',
     })
     return
   }
   User.findOne({ name }).then(user => {
     if (user) {
-      client.send(COMMAND.REGISTER_FAILED, {
+      client.send(CMD.REGISTER_FAILED, {
         msg: 'username_exists',
       })
       return
@@ -31,13 +31,13 @@ module.exports = (client, data) => {
       .save()
       .then(user => {
         client.clientId = user._id.toString()
-        client.send(COMMAND.REGISTER_SUCCESS, {
+        client.send(CMD.REGISTER_SUCCESS, {
           id: client.clientId,
           name,
         })
       })
       .catch(err => {
-        client.send(COMMAND.REGISTER_FAILED, {
+        client.send(CMD.REGISTER_FAILED, {
           msg: err.errors.name.message,
         })
       })

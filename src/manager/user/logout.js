@@ -1,7 +1,7 @@
 const { Client } = require('../../../lib/patchwire')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
-const COMMAND = require('../../command')
+const CMD = require('../../cmd')
 const userManager = require('./_manager')
 
 /**
@@ -9,15 +9,15 @@ const userManager = require('./_manager')
  *
  * @param {Client} client
  * @param {object} data
- * @param {string} data.command
+ * @param {string} data.cmd
  */
 module.exports = (client, data) => {
   if (!userManager.getClients().includes(client)) {
-    client.send(COMMAND.LOGIN_NEEDED)
+    client.send(CMD.LOGIN_NEEDED)
     return
   }
   userManager.removeClient(client.clientId)
-  client.send(COMMAND.LOGOUT, {
+  client.send(CMD.LOGOUT, {
     reason: 'user_intent',
   })
 }

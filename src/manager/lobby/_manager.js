@@ -1,6 +1,6 @@
 const { ClientManager } = require('../../../lib/patchwire')
 const ERROR = require('../../error')
-const COMMAND = require('../../command')
+const CMD = require('../../cmd')
 const Lobby = require('../../util/lobby')
 const config = require('../../../config')
 
@@ -13,7 +13,7 @@ class LobbyManager extends ClientManager {
 
   checkLogin(client) {
     if (!client.clientName) {
-      client.send(COMMAND.LOGIN_NEEDED)
+      client.send(CMD.LOGIN_NEEDED)
       throw Error()
     }
     return true
@@ -21,7 +21,7 @@ class LobbyManager extends ClientManager {
 
   checkPassword(client, lobby, password) {
     if (password !== lobby.password) {
-      client.send(COMMAND.LOBBY_PASS_NOT_VALID)
+      client.send(CMD.LOBBY_PASS_NOT_VALID)
       throw Error()
     }
     return true
@@ -29,7 +29,7 @@ class LobbyManager extends ClientManager {
 
   checkAlreadyInLobbyBeforeLeave(client, lobby) {
     if (!lobby.getClients().includes(client)) {
-      client.send(COMMAND.UNKNOWN_ERROR)
+      client.send(CMD.UNKNOWN_ERROR)
       throw Error()
     }
     return true
@@ -37,7 +37,7 @@ class LobbyManager extends ClientManager {
 
   checkAlreadyInLobbyBeforeJoin(client, lobby) {
     if (lobby.getClients().includes(client)) {
-      client.send(COMMAND.LOBBY_SAME_ID)
+      client.send(CMD.LOBBY_SAME_ID)
       throw Error()
     }
     return true
@@ -45,7 +45,7 @@ class LobbyManager extends ClientManager {
 
   checkLobbyIsFull(client, lobby) {
     if (lobby.getClients().length >= config.maxLobbyPlayers) {
-      client.send(COMMAND.LOBBY_IS_FULL)
+      client.send(CMD.LOBBY_IS_FULL)
       throw Error()
     }
     return true
@@ -54,7 +54,7 @@ class LobbyManager extends ClientManager {
   getCurrentLobbyId(client) {
     const currentLobbyId = client.get('currentLobbyId')
     if (!currentLobbyId) {
-      client.send(COMMAND.LOBBY_NOT_FOUND)
+      client.send(CMD.LOBBY_NOT_FOUND)
       throw Error()
     }
     return currentLobbyId
@@ -63,7 +63,7 @@ class LobbyManager extends ClientManager {
   getLobbyById(lobbyId) {
     const lobby = lobbyManager.lobbies[lobbyId]
     if (!lobby) {
-      client.send(COMMAND.LOBBY_NOT_EXISTS)
+      client.send(CMD.LOBBY_NOT_EXISTS)
       throw Error()
     }
     return lobby
@@ -139,7 +139,7 @@ class LobbyManager extends ClientManager {
     }
     lobby.getClients().forEach(client => {
       client.set('currentLobbyId', undefined)
-      client.send(COMMAND.LOBBY_LEAVE_SUCCESS, {
+      client.send(CMD.LOBBY_LEAVE_SUCCESS, {
         isHost: true,
       })
     })
@@ -152,7 +152,7 @@ class LobbyManager extends ClientManager {
       return
     }
     lobby.getClients().forEach(otherClient => {
-      otherClient.send(COMMAND.LOBBY_LEAVE_SUCCESS, {
+      otherClient.send(CMD.LOBBY_LEAVE_SUCCESS, {
         name: client.clientName,
       })
     })

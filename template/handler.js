@@ -1,13 +1,13 @@
 const { Client } = require('../../../lib/patchwire')
-const COMMAND = require('../../command')
+const CMD = require('../../cmd')
 
 /**
  *
  *
  * @param {Client} socket
  * @param {object} data
- * @param {string} data.command
+ * @param {string} data.cmd
  */
 module.exports = (socket, data) => {
-  socket.send(COMMAND.YOUR_COMMAND, {})
+  socket.send(CMD.YOUR_CMD, {})
 }

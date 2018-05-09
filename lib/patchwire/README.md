@@ -1,12 +1,15 @@
 # Patchwire
+
 Multiplayer game server framework for Node.js
 
 [![Circle CI](https://circleci.com/gh/twisterghost/patchwire.svg?style=svg)](https://circleci.com/gh/twisterghost/patchwire)
 
 ## Install
+
 `npm install patchwire`
 
 ## Use
+
 ```JavaScript
 // MyGameServer.js
 const Server = require('patchwire').Server;
@@ -34,11 +37,11 @@ See [the patchwire Github wiki](https://github.com/twisterghost/patchwire/wiki)
 
 Patchwire is a server framework designed for multiplayer games. Originally built to work with GameMaker: Studio's networking code, it has been standardized to be unassuming about the client end framework.
 
-Patchwire uses a paradigm of sending "commands" to clients, and in turn, listening for commands from the client. A command is nothing more than a string identifier, and some data. A command looks like this:
+Patchwire uses a paradigm of sending "commands" to clients, and in turn, listening for cmds from the client. A cmd is nothing more than a string identifier, and some data. A cmd looks like this:
 
 ```JavaScript
 {
-  command: 'updatePosition',
+  cmd: 'updatePosition',
   x: 200,
   y: 120
 }
@@ -52,4 +55,3 @@ Patchwire is unassuming about the client side as it speaks primarily through JSO
 
 * [GameMaker: Studio](https://github.com/twisterghost/patchwire-gm)
 * [iOS](https://github.com/VictorBX/patchwire-ios)
-

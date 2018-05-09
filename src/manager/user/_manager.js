@@ -1,6 +1,6 @@
 const { ClientManager } = require('../../../lib/patchwire')
 const ERROR = require('../../error')
-const COMMAND = require('../../command')
+const CMD = require('../../cmd')
 
 class UserManager extends ClientManager {
   constructor() {
