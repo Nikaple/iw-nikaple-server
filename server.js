@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const fs = require('fs')
 const { join } = require('path')
 const config = require('./config')
+const syncServer = require('./src/server/sync')
 
 const models = join(__dirname, 'src/model')
 const connection = connect()
@@ -26,6 +27,9 @@ const server = new Server(function(client) {
 function listen() {
   server.listen(config.port, function() {
     console.info(`IW nikaple server is running at port: ${config.port}`)
+  })
+  syncServer.bind(config.port, () => {
+    console.log(`SyncServer listening on port: ${config.port}`)
   })
 }
 

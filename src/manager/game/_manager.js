@@ -9,18 +9,20 @@ class GameManager extends ClientManager {
     this.groups = {}
     // 用于查找特定 id 的用户位于哪个 group
     this.clientIdMap = {}
+    this.clientIpMap = {}
   }
 
   addClientGroup(clients) {
     clients.forEach((client, index) => {
       this.addClient(client)
       this.clientIdMap[client.clientId] = this.currentGroupIndex
+      this.clientIpMap[client.get('ip')] = this.currentGroupIndex
       client.set('currentGroup', this.currentGroupIndex)
       client.set('groupIndex', index)
       client.send(CMD.GAME_START, {
         gameId: this.currentGroupIndex,
         players: clients.map(client => client.clientName),
-        idx: index,
+        idx: index + 1,
       })
     })
 
@@ -31,8 +33,12 @@ class GameManager extends ClientManager {
     this.currentGroupIndex++
   }
 
-  getGroupIdByClientId(clientId) {
-    return this.clientIdMap[clientId]
+  getGroupByClientId(clientId) {
+    return this.groups[this.clientIdMap[clientId]]
+  }
+
+  getGroupByIp(ip) {
+    return this.groups[this.clientIpMap[ip]]
   }
 
   groupBroadcast(currentClient, cmd, data, filter = client => true) {
@@ -42,8 +48,8 @@ class GameManager extends ClientManager {
       data.cmd = cmd
     }
 
-    const groupId = this.getGroupIdByClientId(currentClient.clientId)
-    this.groups[groupId].clients
+    const currentGroup = this.getGroupByClientId(currentClient.clientId)
+    currentGroup.clients
       .filter(client => client !== currentClient)
       .filter(client => filter(client))
       .forEach(client => {

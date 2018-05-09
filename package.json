@@ -17,6 +17,7 @@
     "prettier": "1.12.1"
   },
   "dependencies": {
+    "bytebuffer": "^5.0.1",
     "chalk": "^2.4.1",
     "mongoose": "^5.0.17",
     "mongoose-user": "^0.0.1"

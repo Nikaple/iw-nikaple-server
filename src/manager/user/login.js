@@ -4,6 +4,13 @@ const User = mongoose.model('User')
 const CMD = require('../../cmd')
 const userManager = require('./_manager')
 
+const toIPv4 = ipv6OrIpv4 => {
+  if (ipv6OrIpv4.startsWith('::ffff:')) {
+    return ipv6OrIpv4.slice(7)
+  }
+  return ipv6OrIpv4
+}
+
 /**
  *
  *
@@ -27,8 +34,6 @@ const verifyLogin = (client, user, name, password) => {
     userManager.addUser(userId, client)
     client.clientId = userId
     client.clientName = user.name
-    client.ip = client.socket.remoteAddress
-    client.port = client.socket.remotePort
     client.send(CMD.LOGIN_SUCCESS, {
       id: user._id,
       name: user.name,
@@ -47,7 +52,7 @@ const verifyLogin = (client, user, name, password) => {
  * @param {object} data
  * @param {string} data.cmd
  */
-module.exports = (client, { name, password }) => {
+module.exports = (client, { name, password, udp_port }) => {
   User.findOne({ name }).then(user => {
     if (!user) {
       client.send(CMD.LOGIN_FAILED, {
@@ -56,5 +61,7 @@ module.exports = (client, { name, password }) => {
       return
     }
     verifyLogin(client, user, name, password)
+    client.set('ip', toIPv4(client.socket.remoteAddress))
+    client.set('udpPort', udp_port)
   })
 }
