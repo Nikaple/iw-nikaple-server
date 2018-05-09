@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package.json yarn.lock /app/
 
 RUN npm install -g pm2 --registry=https://registry.npm.taobao.org --loglevel=error
-RUN yarn --registry https://registry.npm.taobao.org --silent
+RUN yarn --registry https://registry.npm.taobao.org
 
 COPY . /app
 EXPOSE 3738
