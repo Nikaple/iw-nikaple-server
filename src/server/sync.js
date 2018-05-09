@@ -43,6 +43,7 @@ class UdpServer {
     const client = userManager.getClientByUserId(userId)
     client.set('udpIP', address)
     client.set('udpPort', port)
+    console.log(`Init udp connection... remote address is ${address}:${port}`)
     const byteBuffer = new ByteBuffer(1)
     byteBuffer.writeByte(1)
   }

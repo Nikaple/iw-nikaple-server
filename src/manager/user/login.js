@@ -62,6 +62,5 @@ module.exports = (client, { name, password, udp_port }) => {
     }
     verifyLogin(client, user, name, password)
     client.set('ip', toIPv4(client.socket.remoteAddress))
-    client.set('udpPort', udp_port)
   })
 }
