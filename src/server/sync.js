@@ -50,23 +50,37 @@ class UdpServer {
     this.directSend(msg, port, address)
   }
 
-  sync(buffer, rinfo) {
+  sync(buffer, { address, port }) {
     const groupId = buffer.readByte()
     const groupIndex = buffer.readByte()
     const room = buffer.readByte()
-    const currentGroup = gameManager.getGroupByAddress(
-      rinfo.address,
-      rinfo.port
-    )
+    const currentGroup = gameManager.getGroupByAddress(address, port)
+    const currentClient = currentGroup.clients[groupIndex - 1]
+    currentClient.set('room', room)
     if (!currentGroup) {
       return
     }
     const message = buffer.slice(2).toBuffer()
-    this.broadcast(currentGroup, groupIndex, message, rinfo)
+    this.broadcast({
+      group: currentGroup,
+      groupIndex,
+      message,
+      address,
+      port,
+      filter: client => client.get('room') === room,
+    })
   }
 
-  broadcast(group, groupIndex, message, { address, port }) {
+  broadcast({
+    group,
+    groupIndex,
+    message,
+    address,
+    port,
+    filter = client => true,
+  }) {
     group.clients
+      .filter(filter)
       .map(client => [client.get('udpIp'), client.get('udpPort')])
       .filter(([ip, udpPort]) => ip !== address || port !== udpPort)
       .forEach(([ip, udpPort]) => {
@@ -77,12 +91,6 @@ class UdpServer {
   tick() {
     Object.keys(this.tickModeMap).forEach(key => {
       const [ip, port] = key.split(':')
-      // const messageMap = this.tickModeMap[key]
-      // if (!messageMap) return
-      // const msg = Object.keys(messageMap).reduce((buffer, from) => {
-      //   const msg = messageMap[from]
-      //   return Buffer.concat([buffer, msg])
-      // }, Buffer.alloc(0))
       const msg = this.tickModeMap[key]
       this.directSend(msg, parseInt(port), ip)
       delete this.tickModeMap[key]

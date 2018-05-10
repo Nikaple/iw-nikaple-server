@@ -46,7 +46,7 @@ module.exports = {
   // 开始游戏
   GAME_START: 'game_start',
   // 同步
-  GAME_SYNC: 's',
+  GAME_SYNC: 'sync',
 
   // 玩家掉线
   PLAYER_DROP: 'player_drop',
