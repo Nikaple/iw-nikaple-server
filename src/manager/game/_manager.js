@@ -9,14 +9,16 @@ class GameManager extends ClientManager {
     this.groups = {}
     // 用于查找特定 id 的用户位于哪个 group
     this.clientIdMap = {}
-    this.clientIpMap = {}
+    this.clientAddressMap = {}
   }
 
   addClientGroup(clients) {
     clients.forEach((client, index) => {
       this.addClient(client)
       this.clientIdMap[client.clientId] = this.currentGroupIndex
-      this.clientIpMap[client.get('ip')] = this.currentGroupIndex
+      this.clientAddressMap[
+        `${client.get('udpIp')}:${client.get('udpPort')}`
+      ] = this.currentGroupIndex
       client.set('currentGroup', this.currentGroupIndex)
       client.set('groupIndex', index)
       client.send(CMD.GAME_START, {
@@ -37,8 +39,8 @@ class GameManager extends ClientManager {
     return this.groups[this.clientIdMap[clientId]]
   }
 
-  getGroupByIp(ip) {
-    return this.groups[this.clientIpMap[ip]]
+  getGroupByAddress(ip, port) {
+    return this.groups[this.clientAddressMap[`${ip}:${port}`]]
   }
 
   groupBroadcast(currentClient, cmd, data, filter = client => true) {
@@ -64,6 +66,12 @@ gameManager.on('clientDropped', client => {
   gameManager.groupBroadcast(client, CMD.PLAYER_DROP, {
     name: client.clientName,
   })
+  const currentGroup = gameManager.getGroupByClientId(client.clientId)
+  const clients = currentGroup.clients
+  currentGroup.clients = clients.filter(groupClient => groupClient !== client)
+  if (clients.length === 0) {
+    delete currentGroup
+  }
 })
 
 gameManager.setTickMode(true)
