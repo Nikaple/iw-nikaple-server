@@ -14,7 +14,7 @@
       },
       "env_development": {
         "NODE_ENV": "development",
-        "GM_SERVER_DEBUG": true
+        "GM_SERVER_DEBUG": "true"
       }
     }
   ]

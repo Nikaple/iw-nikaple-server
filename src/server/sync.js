@@ -55,36 +55,31 @@ class UdpServer {
     const groupIndex = buffer.readByte()
     const room = buffer.readByte()
     const currentGroup = gameManager.getGroupByAddress(address, port)
-    const currentClient = currentGroup.clients[groupIndex - 1]
-    currentClient.set('room', room)
     if (!currentGroup) {
       return
     }
+    const currentClient = currentGroup.clients[groupIndex - 1]
+    if (!currentClient) {
+      return
+    }
+    currentClient.set('room', room)
     const message = buffer.slice(2).toBuffer()
     this.broadcast({
       group: currentGroup,
-      groupIndex,
+      client: currentClient,
       message,
-      address,
-      port,
       filter: client => client.get('room') === room,
     })
   }
 
-  broadcast({
-    group,
-    groupIndex,
-    message,
-    address,
-    port,
-    filter = client => true,
-  }) {
+  broadcast({ group, client, message, filter = client => true }) {
+    const groupIndex = client.get('groupIndex')
     group.clients
       .filter(filter)
+      .filter(currentClient => currentClient !== client)
       .map(client => [client.get('udpIp'), client.get('udpPort')])
-      .filter(([ip, udpPort]) => ip !== address || port !== udpPort)
       .forEach(([ip, udpPort]) => {
-        this.send(groupIndex, message, udpPort, ip)
+        this.send(client, message, udpPort, ip)
       })
   }
 

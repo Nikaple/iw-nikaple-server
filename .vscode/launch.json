@@ -17,8 +17,8 @@
         "<node_internals>/**/*.js"
       ],
       "env": {
-        "GM_SERVER_DEBUG": true,
-        "MONGO_LOCALHOST": true
+        "GM_SERVER_DEBUG": "true",
+        "MONGO_LOCALHOST": "true"
       }
     }
   ]

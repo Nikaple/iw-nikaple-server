@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-  iw-nikaple-server:
+  server:
     build: .
     volumes:
       - ./:/app

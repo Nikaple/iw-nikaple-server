@@ -20,7 +20,7 @@ class GameManager extends ClientManager {
         `${client.get('udpIp')}:${client.get('udpPort')}`
       ] = this.currentGroupIndex
       client.set('currentGroup', this.currentGroupIndex)
-      client.set('groupIndex', index)
+      client.set('groupIndex', index + 1)
       client.send(CMD.GAME_START, {
         gameId: this.currentGroupIndex,
         players: clients.map(client => client.clientName),
