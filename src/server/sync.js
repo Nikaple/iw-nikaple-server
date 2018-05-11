@@ -62,13 +62,13 @@ class UdpServer {
     if (!currentClient) {
       return
     }
-    currentClient.set('room', room)
+    currentClient.set('currentRoom', room)
     const message = buffer.slice(2).toBuffer()
     this.broadcast({
       group: currentGroup,
       client: currentClient,
       message,
-      filter: client => client.get('room') === room,
+      filter: client => client.get('currentRoom') === room,
     })
   }
 

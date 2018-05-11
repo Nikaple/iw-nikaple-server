@@ -11,9 +11,9 @@ const CMD = require('../../cmd')
  */
 module.exports = (client, data) => {
   delete data.cmd
-  const room = (data && data.player && data.player.room) || ''
+  const room = (data && data.e && data.e.warp && data.e.warp.roomTo) || ''
   if (room !== '') {
-    client.set('currentRoom', data.player.room)
+    client.set('currentRoom', room)
   }
   const currentRoom = client.get('currentRoom')
   gameManager.groupBroadcast(
@@ -24,7 +24,7 @@ module.exports = (client, data) => {
       ...data,
     },
     client => {
-      if (data.event && data.event.warp) {
+      if (data.e && data.e.warp) {
         return true
       }
       return client.get('currentRoom') === currentRoom

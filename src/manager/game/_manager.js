@@ -67,10 +67,11 @@ gameManager.on('clientDropped', client => {
     name: client.clientName,
   })
   const currentGroup = gameManager.getGroupByClientId(client.clientId)
-  const clients = currentGroup.clients
-  currentGroup.clients = clients.filter(groupClient => groupClient !== client)
-  if (clients.length === 0) {
-    delete currentGroup
+  currentGroup.clients = currentGroup.clients.filter(
+    groupClient => groupClient !== client
+  )
+  if (currentGroup.clients.length === 0) {
+    delete gameManager.groups[currentGroup.id]
   }
 })
 
