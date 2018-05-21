@@ -129,11 +129,11 @@ class LobbyManager extends ClientManager {
   }
 
   // 解散房间
-  dismissLobby(client, lobby) {
-    return this.leaveLobbyHost(client, lobby)
+  dismissLobby(lobby) {
+    return this.leaveLobbyHost(lobby)
   }
 
-  leaveLobbyHost(client, lobby) {
+  leaveLobbyHost(lobby) {
     if (!lobby) {
       return
     }
@@ -161,5 +161,11 @@ class LobbyManager extends ClientManager {
 }
 
 const lobbyManager = new LobbyManager()
+
+lobbyManager.on('clientDropped', client => {
+  if (client.get('currentLobbyId') > 0) {
+    lobbyManager.leaveLobbySilent(client)
+  }
+})
 
 module.exports = lobbyManager

@@ -1,4 +1,3 @@
-//const { UdpServer } = require('../../lib/patchwire')
 const dgram = require('dgram')
 const chalk = require('chalk')
 const config = require('../../config')
@@ -11,7 +10,7 @@ const CMD = require('./cmd')
 
 const FIFTY_TICKS_PER_SECOND = 20
 
-class UdpServer {
+class SyncServer {
   constructor() {
     this.server = dgram.createSocket('udp4')
     this.tickRate = FIFTY_TICKS_PER_SECOND
@@ -108,11 +107,8 @@ class UdpServer {
 
   logReceived(msg, { address, port }) {
     debugLog(
-      chalk.yellowBright(
-        `Receiving from ${address}:${port}: ${JSON.stringify(
-          msg.toJSON().data
-        )}`
-      )
+      chalk.yellowBright(`Receiving from ${address}:${port}: %j`),
+      msg.toJSON().data
     )
   }
 
@@ -131,14 +127,11 @@ class UdpServer {
   directSend(msg, port, ip) {
     this.server.send(msg, port, ip, () => {
       debugLog(
-        chalk.greenBright(
-          `Message sent to ${ip}:${port}! msg: ${JSON.stringify(
-            msg.toJSON().data
-          )}`
-        )
+        chalk.greenBright(`Message sent to ${ip}:${port}! msg: %j`),
+        msg.toJSON().data
       )
     })
   }
 }
 
-module.exports = new UdpServer()
+module.exports = new SyncServer()

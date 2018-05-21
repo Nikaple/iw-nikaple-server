@@ -20,6 +20,7 @@ module.exports = (client, { lobbyId, password }) => {
   })
 
   if (lobby === null) {
+    client.send(CMD.LOBBY_NOT_EXISTS)
     return
   }
 
@@ -27,5 +28,6 @@ module.exports = (client, { lobbyId, password }) => {
   lobby.broadcast(CMD.LOBBY_JOIN_SUCCESS, {
     lobbyId: lobby.id,
     guest: client.clientName,
+    players: lobby.getClients().map(client => client.clientName),
   })
 }

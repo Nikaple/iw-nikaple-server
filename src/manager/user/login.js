@@ -22,8 +22,11 @@ const verifyLogin = (client, user, name, password) => {
   const userId = user._id.toString()
   if (user.authenticate(password)) {
     const loggedClient = userManager.getClientByUserId(userId)
-    if (loggedClient === client) {
-      client.send(CMD.LOGIN_ALREADY)
+    if (loggedClient === client && loggedClient.clientName === name) {
+      client.send(CMD.LOGIN_ALREADY, {
+        id: client.clientId,
+        name: client.clientName,
+      })
       return
     }
     if (loggedClient && loggedClient.clientName === name) {
@@ -56,7 +59,7 @@ module.exports = (client, { name, password, udp_port }) => {
   User.findOne({ name }).then(user => {
     if (!user) {
       client.send(CMD.LOGIN_FAILED, {
-        msg: 'username_exists',
+        msg: 'username_not_exists',
       })
       return
     }
