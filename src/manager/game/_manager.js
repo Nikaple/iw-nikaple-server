@@ -43,20 +43,24 @@ class GameManager extends ClientManager {
     return this.groups[this.clientAddressMap[`${ip}:${port}`]]
   }
 
-  groupBroadcast(currentClient, cmd, data, filter = client => true) {
+  groupBroadcast(currentClient, cmd, data, filter) {
     if (typeof data === 'undefined') {
       data = cmd
     } else {
       data.cmd = cmd
     }
 
+    if (!filter) {
+      filter = client => client !== currentClient
+    }
+
     const currentGroup = this.getGroupByClientId(currentClient.clientId)
-    currentGroup.clients
-      .filter(client => client !== currentClient)
-      .filter(client => filter(client))
-      .forEach(client => {
-        client.send(data)
-      })
+    if (!currentGroup) {
+      return
+    }
+    currentGroup.clients.filter(filter).forEach(client => {
+      client.send(data)
+    })
   }
 }
 
