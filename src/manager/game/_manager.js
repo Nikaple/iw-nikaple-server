@@ -71,6 +71,9 @@ gameManager.on('clientDropped', client => {
     name: client.clientName,
   })
   const currentGroup = gameManager.getGroupByClientId(client.clientId)
+  if (!currentGroup) {
+    return
+  }
   currentGroup.clients = currentGroup.clients.filter(
     groupClient => groupClient !== client
   )

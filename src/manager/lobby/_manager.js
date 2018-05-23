@@ -121,7 +121,7 @@ class LobbyManager extends ClientManager {
       .forEach(id => {
         const currentLobby = this.lobbies[id]
         if (currentLobby.host === client) {
-          this.dismissLobby(client, currentLobby)
+          this.dismissLobby(currentLobby)
         } else {
           this.leaveLobbyGuest(client, currentLobby)
         }
