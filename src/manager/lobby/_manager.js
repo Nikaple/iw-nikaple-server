@@ -141,8 +141,10 @@ class LobbyManager extends ClientManager {
     if (!lobby) {
       return
     }
-    lobbyManager.getClients().forEach(client => {
+    lobby.getClients().forEach(client => {
       client.set('currentLobbyId', undefined)
+    })
+    lobbyManager.getClients().forEach(client => {
       client.send(CMD.LOBBY_LEAVE_SUCCESS, {
         id: lobby.id,
         isHost: true,
@@ -156,8 +158,10 @@ class LobbyManager extends ClientManager {
     if (!lobby) {
       return
     }
+    client.set('currentLobbyId', undefined)
     lobbyManager.getClients().forEach(otherClient => {
       otherClient.send(CMD.LOBBY_LEAVE_SUCCESS, {
+        id: lobby.id,
         name: client.clientName,
       })
     })

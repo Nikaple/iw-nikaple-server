@@ -16,10 +16,11 @@ module.exports = (client, data) => {
     client.send(CMD.LOGIN_NEEDED)
     return
   }
-  userManager.removeClient(client.clientId)
   if (client.get('currentLobbyId')) {
     lobbyManager.leaveLobbySilent(client)
   }
+  client.clientId = undefined
+  client.clientName = undefined
   client.send(CMD.LOGOUT, {
     reason: 'user_intent',
   })

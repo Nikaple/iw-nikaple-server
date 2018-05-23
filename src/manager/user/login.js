@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const User = mongoose.model('User')
 const CMD = require('../../cmd')
 const userManager = require('./_manager')
+const lobbyManager = require('../lobby/_manager')
 
 const toIPv4 = ipv6OrIpv4 => {
   if (ipv6OrIpv4.startsWith('::ffff:')) {
@@ -30,6 +31,11 @@ const verifyLogin = (client, user, name, password) => {
       return
     }
     if (loggedClient && loggedClient.clientName === name) {
+      if (loggedClient.get('currentLobbyId')) {
+        lobbyManager.leaveLobbySilent(loggedClient)
+      }
+      loggedClient.clientId = undefined
+      loggedClient.clientName = undefined
       loggedClient.send(CMD.LOGOUT, {
         reason: 'another_device',
       })
