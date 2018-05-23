@@ -21,7 +21,7 @@ module.exports = {
   LOGOUT: 'logout',
 
   // 获取房间列表
-  LOBBY_FETCH: 'lobby_fetch',
+  LOBBY_FETCH_SUCCESS: 'lobby_fetch_success',
   // 成功创建房间
   LOBBY_CREATE_SUCCESS: 'lobby_create_success',
   // 成功加入房间

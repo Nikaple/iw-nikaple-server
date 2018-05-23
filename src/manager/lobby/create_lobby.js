@@ -23,8 +23,8 @@ module.exports = (client, { name, password }) => {
 
   client.set('currentLobbyId', lobby.id)
   lobbyManager.broadcast(CMD.LOBBY_CREATE_SUCCESS, {
-    lobbyId: lobby.id,
-    lobbyName: lobby.name,
+    id: lobby.id,
+    name: lobby.name,
     players: [client.clientName],
     needPass: !!password,
   })

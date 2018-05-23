@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const User = mongoose.model('User')
 const CMD = require('../../cmd')
 const userManager = require('./_manager')
-
+const lobbyManager = require('../lobby/_manager')
 /**
  *
  *
@@ -17,6 +17,9 @@ module.exports = (client, data) => {
     return
   }
   userManager.removeClient(client.clientId)
+  if (client.get('currentLobbyId')) {
+    lobbyManager.leaveLobbySilent(client)
+  }
   client.send(CMD.LOGOUT, {
     reason: 'user_intent',
   })
