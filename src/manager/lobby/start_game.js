@@ -23,6 +23,8 @@ module.exports = (client, { lobbyId }) => {
     return
   }
   gameManager.addClientGroup(lobby.getClients())
-  lobbyManager.removeClients(lobby.getClients())
+  lobby.getClients().forEach(client => {
+    client.set('currentLobbyId', undefined)
+  })
   delete lobbyManager.lobbies[lobbyId]
 }
