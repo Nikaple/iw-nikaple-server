@@ -1,63 +1,37 @@
 // This is the handler for game sync
 
+const path = require('path')
+
 const gameManager = require('./_manager')
 const CMD = require('../../cmd')
-const mapValues = require('lodash/mapValues')
 const each = require('lodash/each')
+const loadHandlers = require('../../util/loadHandlers')
+const eventHandlers = loadHandlers(path.resolve(__dirname, 'events'))
+
+// 将绑定了事件处理器的事件交给事件处理器处理，处理完删除
 const handleSyncEvent = (client, e) => {
-  return mapValues(e, (data, event) => {
-    switch (event) {
-      case 'warp':
-        return handleWarpEvent(client, data)
-      case 'warp_wait':
-        return handleWarpWaitEvent(client, data)
-      case 'save_sync':
-        return handleSaveSyncEvent(client, data)
-      default:
-        return data
-    }
-  })
-}
-
-const handleWarpEvent = (client, data) => {
-  const room = data.roomTo
-  if (room !== '') {
-    client.set('currentRoom', room)
-  }
-  client.set('filter', currentClient => currentClient !== client)
-  // clear warp flag
-  each(client.data, (_, key) => {
-    if (key.startsWith('warp-')) {
-      client.set(key, false)
-    }
-  })
-  return data
-}
-
-const handleWarpWaitEvent = (client, data) => {
-  const { room, roomTo } = data
-  const warpFlag = `warp-${room}-${roomTo}`
-  client.set(warpFlag, true)
-  const group = gameManager.getGroupByClientId(client.clientId)
-  const clients = group.clients
-  const IsAllPlayersInWarp = clients.every(
-    client => client.get(warpFlag) === true
-  )
-  if (IsAllPlayersInWarp) {
-    clients.forEach(client => {
-      client.set(warpFlag, false)
+    each(e, (data, event, eventMap) => {
+        const handler = eventHandlers[event]
+        if (handler) {
+            handler(client, data)
+            delete eventMap[event]
+        }
     })
-    client.set('filter', client => true)
-    return { fin: 1, ...data }
-  }
-  return data
 }
 
-const handleSaveSyncEvent = (client, data) => {
-  client.set('filter', currentClient => currentClient !== client)
-  return data
+const defaultHandler = (client, data) => {
+    gameManager.groupBroadcast(
+        client,
+        CMD.GAME_SYNC,
+        {
+            idx: client.get('groupIndex'),
+            ...data,
+        },
+        currentClient =>
+            currentClient.get('currentRoom') === client.get('currentRoom') &&
+            currentClient !== client
+    )
 }
-
 /**
  *
  *
@@ -66,25 +40,18 @@ const handleSaveSyncEvent = (client, data) => {
  * @param {string} data.cmd
  */
 module.exports = (client, data) => {
-  delete data.cmd
+    delete data.cmd
 
-  if (data.e) {
-    data.e = handleSyncEvent(client, data.e)
-  }
+    if (data.e) {
+        // 所有事件分开处理，因为广播的对象可能不同
+        handleSyncEvent(client, data.e)
+        if (Object.keys(data.e).length == 0) {
+            delete data.e
+        }
+    }
 
-  const currentRoom = client.get('currentRoom')
-  // 发送给同一房间中的不同玩家
-  const defaultFilter = currentClient =>
-    currentClient.get('currentRoom') === currentRoom && currentClient !== client
-  const filter = client.get('filter') || defaultFilter
-  gameManager.groupBroadcast(
-    client,
-    CMD.GAME_SYNC,
-    {
-      idx: client.get('groupIndex'),
-      ...data,
-    },
-    filter
-  )
-  client.set('filter', undefined)
+    // 将其余信息发送给同一房间中的不同玩家
+    if (Object.keys(data).length > 0) {
+        defaultHandler(client, data)
+    }
 }
