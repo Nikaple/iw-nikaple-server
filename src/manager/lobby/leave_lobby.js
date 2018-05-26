@@ -10,6 +10,6 @@ const CMD = require('../../cmd')
  * @param {object} data
  * @param {string} data.cmd
  */
-module.exports = client => {
-    lobbyManager.leaveLobby(client)
+module.exports = (client, { isSilent }) => {
+    lobbyManager.leaveLobby(client, isSilent)
 }

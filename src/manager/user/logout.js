@@ -16,9 +16,7 @@ module.exports = (client, data) => {
         client.send(CMD.LOGIN_NEEDED)
         return
     }
-    if (client.get('currentLobbyId')) {
-        lobbyManager.leaveLobbySilent(client)
-    }
+    lobbyManager.leaveLobby(client)
     client.clientId = undefined
     client.clientName = undefined
     client.data = {}

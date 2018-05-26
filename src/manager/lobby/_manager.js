@@ -76,7 +76,7 @@ class LobbyManager extends ClientManager {
     createLobby(client, lobby) {
         try {
             this.checkLogin(client)
-            this.leaveLobbySilent(client)
+            this.leaveLobbyWithoutId(client)
             const currentLobby = new Lobby({ ...lobby, id: this.currentIndex })
             this.lobbies[this.currentIndex] = currentLobby
             this.currentIndex++
@@ -100,7 +100,7 @@ class LobbyManager extends ClientManager {
         }
     }
 
-    leaveLobby(client) {
+    leaveLobby(client, isSilent) {
         try {
             this.checkLogin(client)
             const currentLobbyId = this.getCurrentLobbyId(client)
@@ -108,16 +108,17 @@ class LobbyManager extends ClientManager {
             this.checkAlreadyInLobbyBeforeLeave(client, currentLobby)
             if (client === currentLobby.host) {
                 // 房主退出房间，所有人断开
-                this.leaveLobbyHost(currentLobby)
+                this.leaveLobbyHost(currentLobby, isSilent)
                 return
             }
-            this.leaveLobbyGuest(client, currentLobby)
+            this.leaveLobbyGuest(client, currentLobby, isSilent)
         } catch (err) {
+            this.leaveLobbyWithoutId(client)
             return null
         }
     }
 
-    leaveLobbySilent(client) {
+    leaveLobbyWithoutId(client) {
         Object.keys(this.lobbies)
             .filter(id => {
                 return this.lobbies[id].getClients().includes(client)
@@ -125,46 +126,50 @@ class LobbyManager extends ClientManager {
             .forEach(id => {
                 const currentLobby = this.lobbies[id]
                 if (currentLobby.host === client) {
-                    this.dismissLobby(currentLobby)
+                    this.dismissLobby(currentLobby, true)
                 } else {
-                    this.leaveLobbyGuest(client, currentLobby)
+                    this.leaveLobbyGuest(client, currentLobby, true)
                 }
             })
     }
 
     // 解散房间
-    dismissLobby(lobby) {
-        return this.leaveLobbyHost(lobby)
+    dismissLobby(lobby, isSilent) {
+        return this.leaveLobbyHost(lobby, isSilent)
     }
 
-    leaveLobbyHost(lobby) {
+    leaveLobbyHost(lobby, isSilent) {
         if (!lobby) {
             return
         }
         lobby.getClients().forEach(client => {
             client.set('currentLobbyId', undefined)
         })
-        lobbyManager.getClients().forEach(client => {
-            client.send(CMD.LOBBY_LEAVE_SUCCESS, {
-                id: lobby.id,
-                isHost: true,
+        if (!isSilent) {
+            lobbyManager.getClients().forEach(client => {
+                client.send(CMD.LOBBY_LEAVE_SUCCESS, {
+                    id: lobby.id,
+                    isHost: true,
+                })
             })
-        })
+        }
         delete this.lobbies[lobby.id]
     }
 
     // 非房主离开房间
-    leaveLobbyGuest(client, lobby) {
+    leaveLobbyGuest(client, lobby, isSilent) {
         if (!lobby) {
             return
         }
         client.set('currentLobbyId', undefined)
-        lobbyManager.getClients().forEach(otherClient => {
-            otherClient.send(CMD.LOBBY_LEAVE_SUCCESS, {
-                id: lobby.id,
-                name: client.clientName,
+        if (!isSilent) {
+            lobbyManager.getClients().forEach(otherClient => {
+                otherClient.send(CMD.LOBBY_LEAVE_SUCCESS, {
+                    id: lobby.id,
+                    name: client.clientName,
+                })
             })
-        })
+        }
         lobby.guests = lobby.guests.filter(guest => guest !== client)
     }
 }
@@ -173,7 +178,7 @@ const lobbyManager = new LobbyManager()
 
 lobbyManager.on('clientDropped', client => {
     if (client.get('currentLobbyId') > 0) {
-        lobbyManager.leaveLobbySilent(client)
+        lobbyManager.leaveLobbyWithoutId(client)
     }
 })
 

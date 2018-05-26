@@ -31,9 +31,7 @@ const verifyLogin = (client, user, name, password) => {
             return
         }
         if (loggedClient && loggedClient.clientName === name) {
-            if (loggedClient.get('currentLobbyId')) {
-                lobbyManager.leaveLobbySilent(loggedClient)
-            }
+            lobbyManager.leaveLobby(loggedClient)
             loggedClient.clientId = undefined
             loggedClient.clientName = undefined
             loggedClient.send(CMD.LOGOUT, {
