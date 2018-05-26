@@ -1,26 +1,27 @@
 {
-  "name": "iw-nikaple-server",
-  "version": "0.0.1",
-  "description": "Node.js server for I wanna be the Engine Nikaple Online Edition",
-  "repository": "https://github.com/Nikaple/iw-nikaple-server.git",
-  "main": "index.js",
-  "scripts": {
-    "start": "docker-compose up --build",
-    "local:dev": "nodemon server.js",
-    "docker:dev": "pm2-runtime start process.json -i 1 --env development",
-    "prod": "pm2-runtime start process.json -i 0 --env production",
-    "lint": "prettier --write \"{lib/**/*.js, src/**/*.js}\""
-  },
-  "license": "ISC",
-  "devDependencies": {
-    "nodemon": "^1.17.3",
-    "prettier": "1.12.1"
-  },
-  "dependencies": {
-    "bytebuffer": "^5.0.1",
-    "chalk": "^2.4.1",
-    "lodash": "^4.17.10",
-    "mongoose": "^5.0.17",
-    "mongoose-user": "^0.0.1"
-  }
+    "name": "iw-nikaple-server",
+    "version": "0.0.1",
+    "description":
+        "Node.js server for I wanna be the Engine Nikaple Online Edition",
+    "repository": "https://github.com/Nikaple/iw-nikaple-server.git",
+    "main": "index.js",
+    "scripts": {
+        "start": "docker-compose up --build",
+        "local:dev": "nodemon server.js",
+        "docker:dev": "pm2-runtime start process.json -i 1 --env development",
+        "prod": "pm2-runtime start process.json -i 0 --env production",
+        "lint": "prettier --write {lib,src}/**/*.js"
+    },
+    "license": "ISC",
+    "devDependencies": {
+        "nodemon": "^1.17.3",
+        "prettier": "1.12.1"
+    },
+    "dependencies": {
+        "bytebuffer": "^5.0.1",
+        "chalk": "^2.4.1",
+        "lodash": "^4.17.10",
+        "mongoose": "^5.0.17",
+        "mongoose-user": "^0.0.1"
+    }
 }
