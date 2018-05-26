@@ -13,18 +13,18 @@ const gameManager = require('../game/_manager')
  * @param {string} data.cmd
  */
 module.exports = (client, { lobbyId }) => {
-  const lobby = lobbyManager.lobbies[lobbyId]
-  if (!lobby) {
-    client.send(CMD.LOBBY_NOT_EXISTS)
-    return
-  }
-  if (lobby.host !== client) {
-    client.send(CMD.LOBBY_NOT_AUTHORIZED)
-    return
-  }
-  gameManager.addClientGroup(lobby.getClients())
-  lobby.getClients().forEach(client => {
-    client.set('currentLobbyId', undefined)
-  })
-  delete lobbyManager.lobbies[lobbyId]
+    const lobby = lobbyManager.lobbies[lobbyId]
+    if (!lobby) {
+        client.send(CMD.LOBBY_NOT_EXISTS)
+        return
+    }
+    if (lobby.host !== client) {
+        client.send(CMD.LOBBY_NOT_AUTHORIZED)
+        return
+    }
+    gameManager.addClientGroup(lobby.getClients())
+    lobby.getClients().forEach(client => {
+        client.set('currentLobbyId', undefined)
+    })
+    delete lobbyManager.lobbies[lobbyId]
 }

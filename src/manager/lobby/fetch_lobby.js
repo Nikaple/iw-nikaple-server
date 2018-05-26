@@ -11,12 +11,12 @@ const map = require('lodash/map')
  * @param {string} data.cmd
  */
 module.exports = (client, data = {}) => {
-  client.send(CMD.LOBBY_FETCH_SUCCESS, {
-    lobbies: map(lobbyManager.lobbies, lobby => ({
-      id: lobby.id,
-      name: lobby.name,
-      players: map(lobby.getClients(), 'clientName'),
-      needPass: !!lobby.password,
-    })),
-  })
+    client.send(CMD.LOBBY_FETCH_SUCCESS, {
+        lobbies: map(lobbyManager.lobbies, lobby => ({
+            id: lobby.id,
+            name: lobby.name,
+            players: map(lobby.getClients(), 'clientName'),
+            needPass: !!lobby.password,
+        })),
+    })
 }

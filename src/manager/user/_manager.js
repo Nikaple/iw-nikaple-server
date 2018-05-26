@@ -3,22 +3,22 @@ const ERROR = require('../../error')
 const CMD = require('../../cmd')
 
 class UserManager extends ClientManager {
-  constructor() {
-    super()
-    this.authenticatedUser = {}
-  }
+    constructor() {
+        super()
+        this.authenticatedUser = {}
+    }
 
-  addUser(userId, client) {
-    this.authenticatedUser[userId] = client
-  }
+    addUser(userId, client) {
+        this.authenticatedUser[userId] = client
+    }
 
-  removeUser(userId) {
-    delete this.authenticatedUser[userId]
-  }
+    removeUser(userId) {
+        delete this.authenticatedUser[userId]
+    }
 
-  getClientByUserId(userId) {
-    return this.authenticatedUser[userId]
-  }
+    getClientByUserId(userId) {
+        return this.authenticatedUser[userId]
+    }
 }
 
 const userManager = new UserManager()
