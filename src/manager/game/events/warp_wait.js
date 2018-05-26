@@ -1,5 +1,6 @@
 const gameManager = require('../_manager')
 const CMD = require('../../../cmd')
+const random = require('lodash/random')
 
 module.exports = (client, data) => {
     const broadcast = (filter, additionalData) => {
@@ -28,10 +29,12 @@ module.exports = (client, data) => {
         client => client.get(warpFlag) === true
     )
     if (IsAllPlayersInWarp) {
+        // random seed
+        const seed = 1 + random(1000000000)
         clients.forEach(client => {
             client.set(warpFlag, false)
         })
-        broadcast(client => true, { fin: 1 })
+        broadcast(client => true, { seed })
     }
     broadcast(currentClient => currentClient !== client)
 }
