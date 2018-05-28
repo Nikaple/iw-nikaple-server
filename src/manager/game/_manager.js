@@ -1,6 +1,7 @@
 const { ClientManager } = require('../../../lib/patchwire')
 const ERROR = require('../../error')
 const CMD = require('../../cmd')
+const config = require('../../../config')
 
 class GameManager extends ClientManager {
     constructor() {
@@ -12,27 +13,39 @@ class GameManager extends ClientManager {
         this.clientAddressMap = {}
     }
 
+    getAvailableIndex() {
+        for (let i = 1; i <= config.maxGameGroups; i++) {
+            if (!(i in this.groups)) {
+                return i
+            }
+        }
+    }
+
+    addGroup(groupData) {
+        const groupIndex = this.getAvailableIndex()
+        this.groups[groupIndex] = {
+            id: groupIndex,
+            ...groupData,
+        }
+        return groupIndex
+    }
+
     addClientGroup(clients) {
+        const groupIndex = this.addGroup({ clients })
         clients.forEach((client, index) => {
             this.addClient(client)
-            this.clientIdMap[client.clientId] = this.currentGroupIndex
+            this.clientIdMap[client.clientId] = groupIndex
             this.clientAddressMap[
                 `${client.get('udpIp')}:${client.get('udpPort')}`
-            ] = this.currentGroupIndex
-            client.set('currentGroup', this.currentGroupIndex)
+            ] = groupIndex
+            client.set('currentGroup', groupIndex)
             client.set('groupIndex', index + 1)
             client.send(CMD.GAME_START, {
-                gameId: this.currentGroupIndex,
+                gameId: groupIndex,
                 players: clients.map(client => client.clientName),
                 idx: index + 1,
             })
         })
-
-        this.groups[this.currentGroupIndex] = {
-            id: this.currentGroupIndex,
-            clients,
-        }
-        this.currentGroupIndex++
     }
 
     getGroupByClientId(clientId) {

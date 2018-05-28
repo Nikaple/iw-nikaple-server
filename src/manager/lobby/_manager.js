@@ -1,4 +1,4 @@
-const { ClientManager } = require('../../../lib/patchwire')
+const { ClientManager, Client } = require('../../../lib/patchwire')
 const ERROR = require('../../error')
 const CMD = require('../../cmd')
 const Lobby = require('../../util/lobby')
@@ -11,6 +11,42 @@ class LobbyManager extends ClientManager {
         this.lobbies = {}
     }
 
+    /**
+     * Finds an empty lobby index
+     *
+     * @returns
+     * @memberof LobbyManager
+     */
+    getAvailableIndex() {
+        for (let i = 1; i <= config.maxLobbies; i++) {
+            if (!(i in this.lobbies)) {
+                return i
+            }
+        }
+    }
+
+    /**
+     * Adds a lobby to current manager
+     *
+     * @memberof LobbyManager
+     */
+    addLobby(lobbyData) {
+        const lobbyIndex = this.getAvailableIndex()
+        const currentLobby = new Lobby({
+            ...lobbyData,
+            id: lobbyIndex,
+        })
+        this.lobbies[lobbyIndex] = currentLobby
+        return currentLobby
+    }
+
+    /**
+     * Check if the client is logged in
+     *
+     * @param {Client} client
+     * @returns
+     * @memberof LobbyManager
+     */
     checkLogin(client) {
         if (!client.clientName) {
             client.send(CMD.LOGIN_NEEDED)
@@ -19,6 +55,15 @@ class LobbyManager extends ClientManager {
         return true
     }
 
+    /**
+     * Check is password is same as lobby's password
+     *
+     * @param {Client} client
+     * @param {Lobby} lobby
+     * @param {String} password
+     * @returns
+     * @memberof LobbyManager
+     */
     checkPassword(client, lobby, password) {
         if (password !== lobby.password) {
             client.send(CMD.LOBBY_PASS_NOT_VALID)
@@ -27,6 +72,14 @@ class LobbyManager extends ClientManager {
         return true
     }
 
+    /**
+     * Check if current client is in the lobby before leave
+     *
+     * @param {Client} client
+     * @param {Lobby} lobby
+     * @returns
+     * @memberof LobbyManager
+     */
     checkAlreadyInLobbyBeforeLeave(client, lobby) {
         if (!lobby.getClients().includes(client)) {
             client.send(CMD.UNKNOWN_ERROR)
@@ -35,6 +88,14 @@ class LobbyManager extends ClientManager {
         return true
     }
 
+    /**
+     * Check if current client is in the lobby before join
+     *
+     * @param {Client} client
+     * @param {Lobby} lobby
+     * @returns
+     * @memberof LobbyManager
+     */
     checkAlreadyInLobbyBeforeJoin(client, lobby) {
         if (lobby.getClients().includes(client)) {
             client.send(CMD.LOBBY_SAME_ID)
@@ -43,6 +104,14 @@ class LobbyManager extends ClientManager {
         return true
     }
 
+    /**
+     * Check is current lobby is full
+     *
+     * @param {Client} client
+     * @param {Lobby} lobby
+     * @returns
+     * @memberof LobbyManager
+     */
     checkLobbyIsFull(client, lobby) {
         if (lobby.getClients().length >= config.maxLobbyPlayers) {
             client.send(CMD.LOBBY_IS_FULL)
@@ -51,10 +120,23 @@ class LobbyManager extends ClientManager {
         return true
     }
 
+    /**
+     * Remove a client
+     *
+     * @param {Client} clients
+     * @memberof LobbyManager
+     */
     removeClients(clients) {
         this.clients = this.clients.filter(client => !clients.includes(client))
     }
 
+    /**
+     * Gets the current lobby id of client
+     *
+     * @param {Client} client
+     * @returns
+     * @memberof LobbyManager
+     */
     getCurrentLobbyId(client) {
         const currentLobbyId = client.get('currentLobbyId')
         if (!currentLobbyId) {
@@ -64,6 +146,13 @@ class LobbyManager extends ClientManager {
         return currentLobbyId
     }
 
+    /**
+     * Gets the lobby by lobby id
+     *
+     * @param {Client} lobbyId
+     * @returns
+     * @memberof LobbyManager
+     */
     getLobbyById(lobbyId) {
         const lobby = lobbyManager.lobbies[lobbyId]
         if (!lobby) {
@@ -73,19 +162,33 @@ class LobbyManager extends ClientManager {
         return lobby
     }
 
-    createLobby(client, lobby) {
+    /**
+     * Create a lobby
+     *
+     * @param {Client} client
+     * @param {Object} { name, password, client }
+     * @returns {Lobby} Lobby created
+     * @memberof LobbyManager
+     */
+    createLobby(client, lobbyData) {
         try {
             this.checkLogin(client)
             this.leaveLobbyWithoutId(client)
-            const currentLobby = new Lobby({ ...lobby, id: this.currentIndex })
-            this.lobbies[this.currentIndex] = currentLobby
-            this.currentIndex++
+            const currentLobby = this.addLobby(lobbyData)
             return currentLobby
         } catch (err) {
             return null
         }
     }
 
+    /**
+     * Join a lobby
+     *
+     * @param {Client} client
+     * @param {Object} { id, password, guest }
+     * @returns lobby joined if successful
+     * @memberof LobbyManager
+     */
     joinLobby(client, { id, password, guest }) {
         try {
             this.checkLogin(client)
@@ -100,6 +203,14 @@ class LobbyManager extends ClientManager {
         }
     }
 
+    /**
+     * Leave a lobby
+     *
+     * @param {Client} client
+     * @param {Boolean} isSilent
+     * @returns
+     * @memberof LobbyManager
+     */
     leaveLobby(client, isSilent) {
         try {
             this.checkLogin(client)
@@ -118,7 +229,13 @@ class LobbyManager extends ClientManager {
         }
     }
 
-    leaveLobbyWithoutId(client) {
+    /**
+     * Leave all lobbies of a client without the lobby id
+     *
+     * @param {Client} client
+     * @memberof LobbyManager
+     */
+    leaveLobbyWithoutId(client, isSilent = true) {
         Object.keys(this.lobbies)
             .filter(id => {
                 return this.lobbies[id].getClients().includes(client)
@@ -126,18 +243,33 @@ class LobbyManager extends ClientManager {
             .forEach(id => {
                 const currentLobby = this.lobbies[id]
                 if (currentLobby.host === client) {
-                    this.dismissLobby(currentLobby, true)
+                    this.dismissLobby(currentLobby, isSilent)
                 } else {
-                    this.leaveLobbyGuest(client, currentLobby, true)
+                    this.leaveLobbyGuest(client, currentLobby, isSilent)
                 }
             })
     }
 
-    // 解散房间
+    /**
+     * Dismiss a lobby, same as leaveLobbyHost
+     *
+     * @param {Lobby} lobby
+     * @param {Boolean} isSilent
+     * @returns
+     * @memberof LobbyManager
+     */
     dismissLobby(lobby, isSilent) {
         return this.leaveLobbyHost(lobby, isSilent)
     }
 
+    /**
+     * Leave the lobby when current client is host
+     *
+     * @param {Lobby} lobby
+     * @param {Boolean} isSilent
+     * @returns
+     * @memberof LobbyManager
+     */
     leaveLobbyHost(lobby, isSilent) {
         if (!lobby) {
             return
@@ -156,7 +288,15 @@ class LobbyManager extends ClientManager {
         delete this.lobbies[lobby.id]
     }
 
-    // 非房主离开房间
+    /**
+     * Leave the lobby when current client is guest
+     *
+     * @param {Client} client
+     * @param {Lobby} lobby
+     * @param {Boolean} isSilent
+     * @returns
+     * @memberof LobbyManager
+     */
     leaveLobbyGuest(client, lobby, isSilent) {
         if (!lobby) {
             return
