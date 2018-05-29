@@ -12,7 +12,7 @@ module.exports = (client, data) => {
         if (key.startsWith('warp-')) {
             client.set(key, false)
         }
-        if (key.startsWith('save-')) {
+        if (key.startsWith('saved-')) {
             client.set(key, false)
         }
     })
