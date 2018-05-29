@@ -12,8 +12,11 @@ module.exports = (client, data) => {
         if (key.startsWith('warp-')) {
             client.set(key, false)
         }
+        if (key.startsWith('save-')) {
+            client.set(key, false)
+        }
     })
-    client.set('reset_wait', false)
+    client.set('resetPressed', false)
     gameManager.groupBroadcast(
         client,
         CMD.GAME_SYNC,
