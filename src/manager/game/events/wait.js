@@ -9,7 +9,6 @@ module.exports = (client, data) => {
             client,
             CMD.GAME_SYNC,
             {
-                idx: client.get('groupIndex'),
                 w: {
                     [name]: {
                         ...waitData,

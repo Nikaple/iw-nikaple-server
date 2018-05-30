@@ -8,29 +8,48 @@ const each = require('lodash/each')
 const loadHandlers = require('../../util/loadHandlers')
 const eventHandlers = loadHandlers(path.resolve(__dirname, 'events'))
 
+const scopeFilterMap = client => ({
+    default: currentClient =>
+        currentClient.get('currentRoom') === client.get('currentRoom') &&
+        currentClient !== client,
+    other: currentClient => currentClient => currentClient !== client,
+    all: currentClient => true,
+})
+
 // 将绑定了事件处理器的事件交给事件处理器处理，处理完删除
 const handleSyncEvent = (client, e) => {
     each(e, (data, event, eventMap) => {
-        const handler = eventHandlers[event]
-        if (handler) {
-            handler(client, data, event)
-            delete eventMap[event]
-        }
+        const handler = eventHandlers[event] || defaultEventHandler
+        handler(client, data, event)
+        delete eventMap[event]
     })
 }
 
-const defaultHandler = (client, data) => {
+// echo back
+const defaultEventHandler = (client, data, event) => {
+    const { scope = 'default' } = data
+    const filter = scopeFilterMap(client)[scope]
+    delete data.scope
     gameManager.groupBroadcast(
         client,
         CMD.GAME_SYNC,
         {
-            idx: client.get('groupIndex'),
-            ...data,
+            e: {
+                [event]: {
+                    ...data,
+                },
+            },
         },
-        currentClient =>
-            currentClient.get('currentRoom') === client.get('currentRoom') &&
-            currentClient !== client
+        filter
     )
+}
+
+// echo back
+const defaultHandler = (client, data) => {
+    const { scope = 'default' } = data
+    const filter = scopeFilterMap(client)[scope]
+    delete data.scope
+    gameManager.groupBroadcast(client, CMD.GAME_SYNC, data, filter)
 }
 /**
  *
@@ -43,14 +62,13 @@ module.exports = (client, data) => {
     delete data.cmd
 
     if (data.e) {
-        // 所有事件分开处理，因为广播的对象可能不同
+        // 处理特殊事件
         handleSyncEvent(client, data.e)
         if (Object.keys(data.e).length == 0) {
             delete data.e
         }
     }
 
-    // 将其余信息发送给同一房间中的不同玩家
     if (Object.keys(data).length > 0) {
         defaultHandler(client, data)
     }

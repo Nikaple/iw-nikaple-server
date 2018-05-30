@@ -72,7 +72,10 @@ class GameManager extends ClientManager {
             return
         }
         currentGroup.clients.filter(filter).forEach(client => {
-            client.send(data)
+            client.send({
+                idx: currentClient.get('groupIndex'),
+                ...data,
+            })
         })
     }
 }

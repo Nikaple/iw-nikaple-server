@@ -1,6 +1,5 @@
 const gameManager = require('../_manager')
 const CMD = require('../../../cmd')
-const each = require('lodash/each')
 
 module.exports = (client, data) => {
     const room = data.roomTo
@@ -14,7 +13,6 @@ module.exports = (client, data) => {
         client,
         CMD.GAME_SYNC,
         {
-            idx: client.get('groupIndex'),
             e: {
                 warp: {
                     ...data,
