@@ -7,16 +7,9 @@ module.exports = (client, data) => {
     if (room !== '') {
         client.set('currentRoom', room)
     }
-    // clear warp flag
-    each(client.data, (_, key) => {
-        if (key.startsWith('warp-')) {
-            client.set(key, false)
-        }
-        if (key.startsWith('saved-')) {
-            client.set(key, false)
-        }
-    })
-    client.set('resetPressed', false)
+    // clear flags
+    client.resetFlags()
+
     gameManager.groupBroadcast(
         client,
         CMD.GAME_SYNC,

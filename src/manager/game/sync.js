@@ -13,7 +13,7 @@ const handleSyncEvent = (client, e) => {
     each(e, (data, event, eventMap) => {
         const handler = eventHandlers[event]
         if (handler) {
-            handler(client, data)
+            handler(client, data, event)
             delete eventMap[event]
         }
     })
