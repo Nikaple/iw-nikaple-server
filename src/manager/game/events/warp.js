@@ -8,7 +8,6 @@ module.exports = (client, data) => {
     }
     // clear flags
     client.resetFlags()
-
     gameManager.groupBroadcast(
         client,
         CMD.GAME_SYNC,

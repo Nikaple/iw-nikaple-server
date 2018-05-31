@@ -3,7 +3,7 @@ const CMD = require('../../../cmd')
 const random = require('lodash/random')
 
 module.exports = (client, data) => {
-    const { name, seed } = data
+    const { name, seed, order } = data
     const broadcast = (filter, waitData) => {
         gameManager.groupBroadcast(
             client,
@@ -25,6 +25,9 @@ module.exports = (client, data) => {
     delete data.name
 
     const group = gameManager.getGroupByClientId(client.clientId)
+    if (order && !group.order.includes(client)) {
+        group.order.push(client)
+    }
     const clients = group.clients
     const shouldContinue = clients.every(
         client => client.getFlag(flag) === true
@@ -36,6 +39,9 @@ module.exports = (client, data) => {
         }
         if (seed) {
             syncData.seed = 1 + random(1000000000)
+        }
+        if (order) {
+            syncData.order = group.order.map(client => client.clientName)
         }
         clients.forEach(client => {
             client.deleteFlag(flag)

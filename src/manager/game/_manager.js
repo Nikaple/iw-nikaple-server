@@ -25,6 +25,7 @@ class GameManager extends ClientManager {
         const groupIndex = this.getAvailableIndex()
         this.groups[groupIndex] = {
             id: groupIndex,
+            order: [],
             ...groupData,
         }
         return groupIndex

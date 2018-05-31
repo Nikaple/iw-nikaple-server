@@ -137,10 +137,12 @@ class LobbyManager extends ClientManager {
      * @returns
      * @memberof LobbyManager
      */
-    getCurrentLobbyId(client) {
+    getCurrentLobbyId(client, isSilent) {
         const currentLobbyId = client.get('currentLobbyId')
         if (!currentLobbyId) {
-            client.send(CMD.LOBBY_NOT_FOUND)
+            if (!isSilent) {
+                client.send(CMD.LOBBY_NOT_FOUND)
+            }
             throw Error()
         }
         return currentLobbyId
@@ -153,10 +155,12 @@ class LobbyManager extends ClientManager {
      * @returns
      * @memberof LobbyManager
      */
-    getLobbyById(lobbyId) {
+    getLobbyById(lobbyId, isSilent) {
         const lobby = lobbyManager.lobbies[lobbyId]
         if (!lobby) {
-            client.send(CMD.LOBBY_NOT_EXISTS)
+            if (!isSilent) {
+                client.send(CMD.LOBBY_NOT_EXISTS)
+            }
             throw Error()
         }
         return lobby
@@ -214,8 +218,8 @@ class LobbyManager extends ClientManager {
     leaveLobby(client, isSilent) {
         try {
             this.checkLogin(client)
-            const currentLobbyId = this.getCurrentLobbyId(client)
-            const currentLobby = this.getLobbyById(currentLobbyId)
+            const currentLobbyId = this.getCurrentLobbyId(client, isSilent)
+            const currentLobby = this.getLobbyById(currentLobbyId, isSilent)
             this.checkAlreadyInLobbyBeforeLeave(client, currentLobby)
             if (client === currentLobby.host) {
                 // 房主退出房间，所有人断开
