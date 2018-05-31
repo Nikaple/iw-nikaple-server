@@ -6,6 +6,7 @@ const ByteBuffer = require('bytebuffer')
 const gameManager = require('../manager/game/_manager')
 const userManager = require('../manager/user/_manager')
 const debugLog = require('../util/debugLog')
+const { SCOPE, getFilter } = require('../util/getFilter')
 const CMD = require('./cmd')
 
 const FIFTY_TICKS_PER_SECOND = 20
@@ -29,13 +30,15 @@ class SyncServer {
                 'utf-8',
                 ByteBuffer.LITTLE_ENDIAN
             )
-            const command = buffer.readByte()
+            const firstByte = buffer.readUint8()
+            const command = firstByte >> 4
+            const scope = firstByte & 15
             switch (command) {
                 case CMD.INIT:
                     this.init(buffer, rinfo)
                     break
                 case CMD.SYNC:
-                    this.sync(buffer, rinfo)
+                    this.sync(buffer, rinfo, scope)
                     break
             }
         })
@@ -50,15 +53,15 @@ class SyncServer {
         client.set('udpPort', port)
         debugLog(`Init udp connection... client address is ${address}:${port}`)
         const msg = Buffer.alloc(2)
-        msg.writeInt8(CMD.UDP_SUCCESS)
-        msg.writeInt8(initTimes, 1)
+        msg.writeUInt8(CMD.UDP_SUCCESS)
+        msg.writeUInt8(initTimes, 1)
         this.directSend(msg, port, address)
     }
 
-    sync(buffer, { address, port }) {
-        const groupId = buffer.readByte()
-        const groupIndex = buffer.readByte() >> 4
-        const room = buffer.readByte()
+    sync(buffer, { address, port }, scope) {
+        const groupId = buffer.readUint8()
+        const groupIndex = buffer.readUint8() >> 4
+        const room = buffer.readUint16()
         const currentGroup = gameManager.getGroupByAddress(address, port)
         if (!currentGroup) {
             return
@@ -73,7 +76,7 @@ class SyncServer {
             group: currentGroup,
             client: currentClient,
             message,
-            filter: client => client.get('currentRoom') === room,
+            filter: getFilter(currentClient)[scope],
         })
     }
 
