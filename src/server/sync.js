@@ -59,9 +59,9 @@ class SyncServer {
     }
 
     sync(buffer, { address, port }, scope) {
-        const groupId = buffer.readUint8()
-        const groupIndex = buffer.readUint8() >> 4
-        const room = buffer.readUint16()
+        const groupId = buffer.readInt8()
+        const groupIndex = buffer.readInt8()
+        const room = buffer.readInt8()
         const currentGroup = gameManager.getGroupByAddress(address, port)
         if (!currentGroup) {
             return

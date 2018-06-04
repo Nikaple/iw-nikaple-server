@@ -223,10 +223,10 @@ class LobbyManager extends ClientManager {
             this.checkAlreadyInLobbyBeforeLeave(client, currentLobby)
             if (client === currentLobby.host) {
                 // 房主退出房间，所有人断开
-                this.leaveLobbyHost(currentLobby, isSilent)
+                this.leaveLobbyHost(currentLobby)
                 return
             }
-            this.leaveLobbyGuest(client, currentLobby, isSilent)
+            this.leaveLobbyGuest(client, currentLobby)
         } catch (err) {
             this.leaveLobbyWithoutId(client)
             return null

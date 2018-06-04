@@ -4,6 +4,7 @@ const User = mongoose.model('User')
 const CMD = require('../../cmd')
 const userManager = require('./_manager')
 const lobbyManager = require('../lobby/_manager')
+const gameManager = require('../game/_manager')
 /**
  *
  *
@@ -17,6 +18,7 @@ module.exports = (client, data) => {
         return
     }
     lobbyManager.leaveLobby(client)
+    gameManager.removePlayer(client)
     client.clientId = undefined
     client.clientName = undefined
     client.data = {}

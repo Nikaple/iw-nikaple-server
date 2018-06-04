@@ -42,12 +42,16 @@ module.exports = (client, data) => {
         }
         if (order) {
             syncData.order = group.order.map(client => client.clientName)
+            group.order = []
         }
         clients.forEach(client => {
             client.deleteFlag(flag)
         })
         broadcast(client => true, syncData)
     } else {
+        if (order) {
+            data.order = group.order.indexOf(client) + 1
+        }
         broadcast(currentClient => currentClient !== client, data)
     }
 }

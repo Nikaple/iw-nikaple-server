@@ -79,24 +79,31 @@ class GameManager extends ClientManager {
             })
         })
     }
+
+    removePlayer(client) {
+        if (!client) {
+            return
+        }
+        gameManager.groupBroadcast(client, CMD.PLAYER_DROP, {
+            name: client.clientName,
+        })
+        const currentGroup = gameManager.getGroupByClientId(client.clientId)
+        if (!currentGroup) {
+            return
+        }
+        currentGroup.clients = currentGroup.clients.filter(
+            groupClient => groupClient !== client
+        )
+        if (currentGroup.clients.length === 0) {
+            delete gameManager.groups[currentGroup.id]
+        }
+    }
 }
 
 const gameManager = new GameManager()
 
 gameManager.on('clientDropped', client => {
-    gameManager.groupBroadcast(client, CMD.PLAYER_DROP, {
-        name: client.clientName,
-    })
-    const currentGroup = gameManager.getGroupByClientId(client.clientId)
-    if (!currentGroup) {
-        return
-    }
-    currentGroup.clients = currentGroup.clients.filter(
-        groupClient => groupClient !== client
-    )
-    if (currentGroup.clients.length === 0) {
-        delete gameManager.groups[currentGroup.id]
-    }
+    gameManager.removePlayer(client)
 })
 
 gameManager.setTickMode(true)
