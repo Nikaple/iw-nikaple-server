@@ -26,5 +26,5 @@ module.exports = (client, { lobbyId }) => {
     lobby.getClients().forEach(client => {
         client.set('currentLobbyId', undefined)
     })
-    delete lobbyManager.lobbies[lobbyId]
+    lobbyManager.dismissLobby(lobby)
 }
