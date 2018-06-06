@@ -1,6 +1,13 @@
+const { Client } = require('../../../../lib/patchwire')
 const gameManager = require('../_manager')
 const CMD = require('../../../cmd')
 
+/**
+ *
+ *
+ * @param {Client} client
+ * @param {object} data
+ */
 module.exports = (client, data) => {
     const room = data.roomTo
     if (room !== '') {

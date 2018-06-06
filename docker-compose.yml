@@ -12,5 +12,6 @@ services:
       - mongo
     depends_on:
       - mongo
+      
   mongo:
     image: registry.docker-cn.com/library/mongo

@@ -1,7 +1,14 @@
+const { Client } = require('../../../../lib/patchwire')
 const gameManager = require('../_manager')
 const CMD = require('../../../cmd')
 const random = require('lodash/random')
 
+/**
+ *
+ *
+ * @param {Client} client
+ * @param {object} data
+ */
 module.exports = (client, data) => {
     const { name, seed, order } = data
     const broadcast = (filter, waitData) => {
