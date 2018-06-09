@@ -1,8 +1,6 @@
 # iw-nikaple-server
 
-## 简介
-
-## 使用方法
+## 部署
 
 1.  确认你拥有公网 IP
 
@@ -78,8 +76,32 @@
     ```dockerfile
     ...
     RUN npm install -g pm2 # --registry=https://registry.npm.taobao.org
-    RUN yarn # --registry https://registry.npm.taobao.org
+    RUN npm install # --registry=https://registry.npm.taobao.org
     ...
     ```
 
     ​
+
+## 本地开发
+
+### 使用 Docker
+
+1.  与上面一样，首先需要安装好 `Docker` 与 `Docker-compose`
+2.  获取容器 ip。详见 [docker-machine ip](https://docs.docker.com/machine/reference/ip/)
+3.  将 `global.ip_address` 改为容器 ip 即可
+
+### 使用 Node.js
+
+1.  安装好 [Node.js](https://nodejs.org)
+2.  安装好 [Mongodb](https://www.mongodb.com)
+3.  将项目克隆到本地
+    ```bash
+    $ git clone https://github.com/Nikaple/iw-nikaple-server.git
+    ```
+4.  安装依赖
+    ```bash
+    npm install --registry=https://registry.npm.taobao.org
+    ```
+5.  启动服务器：
+    *   如果使用 VS Code，直接打开调试面板启动调试即可。
+    *   如果使用其他软件，请将环境变量中的 `GM_SERVER_DEBUG` 以及 `MONGO_LOCALHOST` 均设置为 `"true"`

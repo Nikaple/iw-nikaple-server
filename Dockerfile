@@ -7,8 +7,8 @@ WORKDIR /app
 
 COPY package.json package-lock.json /app/
 
-RUN npm install -g pm2 --registry=https://registry.npm.taobao.org --loglevel=error
-RUN npm install --registry https://registry.npm.taobao.org
+RUN npm install -g pm2 --registry=https://registry.npm.taobao.org
+RUN npm install --registry=https://registry.npm.taobao.org
 
 COPY . /app
 
