@@ -18,11 +18,13 @@ class LobbyManager extends ClientManager {
      * @memberof LobbyManager
      */
     getAvailableIndex() {
-        for (let i = 1; i <= config.maxLobbies; i++) {
-            if (!(i in this.lobbies)) {
-                return i
-            }
-        }
+        this.currentIndex++
+        return this.currentIndex
+        // for (let i = 1; i <= config.maxLobbies; i++) {
+        //     if (!(i in this.lobbies)) {
+        //         return i
+        //     }
+        // }
     }
 
     /**
