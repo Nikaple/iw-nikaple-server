@@ -10,10 +10,11 @@ const CMD = require('../../cmd')
  * @param {object} data
  * @param {string} data.cmd
  */
-module.exports = (client, { name, password }) => {
+module.exports = (client, { name, password, mode }) => {
     const lobby = lobbyManager.createLobby(client, {
         name,
         password,
+        mode,
         host: client,
     })
 
@@ -25,6 +26,7 @@ module.exports = (client, { name, password }) => {
     lobbyManager.broadcast(CMD.LOBBY_CREATE_SUCCESS, {
         id: lobby.id,
         name: lobby.name,
+        mode: lobby.mode,
         players: [client.clientName],
         needPass: !!password,
     })

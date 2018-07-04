@@ -28,6 +28,7 @@ module.exports = (client, { lobbyId, password }) => {
     lobbyManager.broadcast(CMD.LOBBY_JOIN_SUCCESS, {
         id: lobby.id,
         name: lobby.name,
+        mode: lobby.mode,
         guest: client.clientName,
         players: lobby.getClients().map(client => client.clientName),
     })

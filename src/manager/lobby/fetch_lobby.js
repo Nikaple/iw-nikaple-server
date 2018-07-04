@@ -15,6 +15,7 @@ module.exports = (client, data = {}) => {
         lobbies: map(lobbyManager.lobbies, lobby => ({
             id: lobby.id,
             name: lobby.name,
+            mode: lobby.mode,
             players: map(lobby.getClients(), 'clientName'),
             needPass: !!lobby.password,
         })),

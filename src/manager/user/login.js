@@ -59,7 +59,7 @@ const verifyLogin = (client, user, name, password) => {
  * @param {object} data
  * @param {string} data.cmd
  */
-module.exports = (client, { name, password, udp_port }) => {
+module.exports = (client, { name, password }) => {
     User.findOne({ name }).then(user => {
         if (!user) {
             client.send(CMD.LOGIN_FAILED, {

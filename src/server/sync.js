@@ -59,8 +59,7 @@ class SyncServer {
     }
 
     sync(buffer, { address, port }, scope) {
-        const groupId = buffer.readInt8()
-        const groupIndex = buffer.readInt8()
+        const groupIndex = buffer.readInt16()
         const room = buffer.readInt8()
         const currentGroup = gameManager.getGroupByAddress(address, port)
         if (!currentGroup) {
@@ -71,7 +70,7 @@ class SyncServer {
             return
         }
         currentClient.set('currentRoom', room)
-        const message = buffer.slice(2).toBuffer()
+        const message = buffer.slice(1).toBuffer()
         this.broadcast({
             group: currentGroup,
             client: currentClient,
@@ -80,8 +79,7 @@ class SyncServer {
         })
     }
 
-    broadcast({ group, client, message, filter = client => true }) {
-        const groupIndex = client.get('groupIndex')
+    broadcast({ group, client, message, filter = () => true }) {
         group.clients
             .filter(filter)
             .filter(currentClient => currentClient !== client)

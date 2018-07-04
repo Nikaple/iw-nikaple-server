@@ -1,7 +1,8 @@
 class Lobby {
-    constructor({ id, name, password, host }) {
+    constructor({ id, name, mode, password, host }) {
         this.id = id
         this.name = name
+        this.mode = mode
         this.password = password
         this.host = host
         this.guests = []
