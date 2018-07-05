@@ -8,7 +8,7 @@ const UserSchema = new Schema({
         default: '',
         validate: {
             validator: v => {
-                return /^\w.{3,29}$/.test(v)
+                return /^.{4,30}$/.test(v)
             },
             msg: 'username_not_valid',
         },
