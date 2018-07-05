@@ -3,8 +3,6 @@ version: '2'
 services:
   server:
     build: .
-    volumes:
-      - ./:/app
     ports:
       - "3738:3738/tcp"
       - "3738:3738/udp"
