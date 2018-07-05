@@ -1,8 +1,7 @@
 {
     "name": "iw-nikaple-server",
     "version": "0.0.1",
-    "description":
-        "Node.js server for I wanna be the Engine Nikaple Online Edition",
+    "description": "Node.js server for I wanna be the Engine Nikaple Online Edition",
     "repository": "https://github.com/Nikaple/iw-nikaple-server.git",
     "main": "index.js",
     "scripts": {
@@ -20,6 +19,7 @@
     "dependencies": {
         "bytebuffer": "^5.0.1",
         "chalk": "^2.4.1",
+        "escape-regexp": "^0.0.1",
         "lodash": "^4.17.10",
         "mongoose": "^5.0.17",
         "mongoose-user": "^0.0.1"

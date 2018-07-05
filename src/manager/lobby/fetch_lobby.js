@@ -1,7 +1,6 @@
 const { Client } = require('../../../lib/patchwire')
 const CMD = require('../../cmd')
 const lobbyManager = require('./_manager')
-const mapValues = require('lodash/mapValues')
 const map = require('lodash/map')
 /**
  *
@@ -10,7 +9,7 @@ const map = require('lodash/map')
  * @param {object} data
  * @param {string} data.cmd
  */
-module.exports = (client, data = {}) => {
+module.exports = client => {
     client.send(CMD.LOBBY_FETCH_SUCCESS, {
         lobbies: map(lobbyManager.lobbies, lobby => ({
             id: lobby.id,

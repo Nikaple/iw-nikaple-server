@@ -2,7 +2,7 @@ const { Client } = require('../../../lib/patchwire')
 const mongoose = require('mongoose')
 const User = mongoose.model('User')
 const CMD = require('../../cmd')
-
+const escapeRegex = require('escape-regexp')
 /**
  *
  *
@@ -19,7 +19,12 @@ module.exports = (client, data) => {
         })
         return
     }
-    User.findOne({ name }).then(user => {
+    User.findOne({
+        name: {
+            $regex: new RegExp(escapeRegex(name)),
+            $options: 'i',
+        },
+    }).then(user => {
         if (user) {
             client.send(CMD.REGISTER_FAILED, {
                 msg: 'username_exists',
