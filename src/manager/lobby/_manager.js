@@ -241,7 +241,7 @@ class LobbyManager extends ClientManager {
      * @param {Client} client
      * @memberof LobbyManager
      */
-    leaveLobbyWithoutId(client, isSilent = true) {
+    leaveLobbyWithoutId(client, isSilent = false) {
         Object.keys(this.lobbies)
             .filter(id => {
                 return this.lobbies[id].getClients().includes(client)
