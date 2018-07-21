@@ -16,11 +16,6 @@ class GameManager extends ClientManager {
     getAvailableIndex() {
         this.currentGroupIndex++
         return this.currentGroupIndex
-        // for (let i = 1; i <= config.maxGameGroups; i++) {
-        //     if (!(i in this.groups)) {
-        //         return i
-        //     }
-        // }
     }
 
     addGroup(groupData) {

@@ -6,6 +6,4 @@ module.exports = {
     port: 3738,
 
     maxLobbyPlayers: 8,
-    maxLobbies: 65535,
-    maxGameGroups: 255,
 }

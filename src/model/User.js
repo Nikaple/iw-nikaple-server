@@ -8,7 +8,10 @@ const UserSchema = new Schema({
         default: '',
         validate: {
             validator: v => {
-                return /^.{4,30}$/.test(v)
+                const chineseCharacters =
+                    v.match(/%[0-9a-f]{2}%[0-9a-f]{2}/g) || []
+                const usernameLength = v.length - 5 * chineseCharacters.length
+                return usernameLength >= 1 && usernameLength <= 20
             },
             msg: 'username_not_valid',
         },
