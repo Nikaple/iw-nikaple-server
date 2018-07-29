@@ -5,37 +5,37 @@ const { join } = require('path')
 const config = require('./config')
 const syncServer = require('./src/server/sync')
 
-const models = join(__dirname, 'src/model')
+// connect to database
 const connection = connect()
-
 connection
-  .once('connected', listen)
-  .on('disconnected', () => setTimeout(connect, config.dbReconnectInterval))
+    .once('connected', listen)
+    .on('disconnected', () => setTimeout(connect, config.dbReconnectInterval))
 
-// Bootstrap models
-fs
-  .readdirSync(models)
-  .filter(file => file.includes('.js'))
-  .forEach(file => require(join(models, file)))
+// bootstrap models
+const models = require('./src/model')
+models.init()
 
+// bootstrap managers
 const managers = require('./src/managers')
 const server = new Server(function(client) {
-  managers.lobby.addClient(client)
-  managers.user.addClient(client)
+    managers.lobby.addClient(client)
+    managers.user.addClient(client)
 })
 
+// start server
 function listen() {
-  server.listen(config.port, function() {
-    console.info(`IW nikaple server is running at port: ${config.port}`)
-  })
-  syncServer.bind(config.port, () => {
-    console.log(`SyncServer listening on port: ${config.port}`)
-  })
+    server.listen(config.port, function() {
+        console.info(`IW nikaple server is running at port: ${config.port}`)
+    })
+    syncServer.bind(config.port, () => {
+        console.log(`SyncServer listening on port: ${config.port}`)
+    })
 }
 
+// reconnect
 function connect() {
-  mongoose.connect(config.db).catch(err => {
-    console.log('Mongo connection error... Reconnecting...')
-  })
-  return mongoose.connection
+    mongoose.connect(config.db).catch(err => {
+        console.log('Mongo connection error... Reconnecting...')
+    })
+    return mongoose.connection
 }

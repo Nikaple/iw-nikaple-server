@@ -19,6 +19,18 @@ module.exports = {
     LOGIN_ALREADY: 'login_already',
     // 登出
     LOGOUT: 'logout',
+    // 自定义信息储存成功
+    DATA_SET_SUCCESS: 'data_set_success',
+    // 自定义信息储存失败
+    DATA_SET_FAIL: 'data_set_fail',
+    // 自定义信息读取成功
+    DATA_GET_SUCCESS: 'data_get_success',
+    // 自定义信息读取失败
+    DATA_GET_FAIL: 'data_get_fail',
+    // 自定义信息批量读取成功
+    DATA_GET_ALL_SUCCESS: 'data_get_all_success',
+    // 自定义信息批量读取失败
+    DATA_GET_ALL_FAIL: 'data_get_all_fail',
 
     // 获取房间列表
     LOBBY_FETCH_SUCCESS: 'lobby_fetch_success',

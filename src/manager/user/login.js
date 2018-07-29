@@ -24,11 +24,10 @@ const verifyLogin = (client, user, name, password) => {
     if (user.authenticate(password)) {
         const loggedClient = userManager.getClientByUserId(userId)
         if (loggedClient === client && loggedClient.clientName === name) {
-            client.send(CMD.LOGIN_ALREADY, {
+            return client.send(CMD.LOGIN_ALREADY, {
                 id: client.clientId,
                 name: client.clientName,
             })
-            return
         }
         if (loggedClient && loggedClient.clientName === name) {
             lobbyManager.leaveLobby(loggedClient, true)
@@ -41,14 +40,13 @@ const verifyLogin = (client, user, name, password) => {
         userManager.addUser(userId, client)
         client.clientId = userId
         client.clientName = user.name
-        client.send(CMD.LOGIN_SUCCESS, {
+        return client.send(CMD.LOGIN_SUCCESS, {
             id: user._id,
             name: user.name,
         })
-        return
     }
 
-    client.send(CMD.LOGIN_FAILED, {
+    return client.send(CMD.LOGIN_FAILED, {
         msg: 'wrong_password',
     })
 }

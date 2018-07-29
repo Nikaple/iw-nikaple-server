@@ -15,12 +15,10 @@ const gameManager = require('../game/_manager')
 module.exports = (client, { lobbyId }) => {
     const lobby = lobbyManager.lobbies[lobbyId]
     if (!lobby) {
-        client.send(CMD.LOBBY_NOT_EXISTS)
-        return
+        return client.send(CMD.LOBBY_NOT_EXISTS)
     }
     if (lobby.host !== client) {
-        client.send(CMD.LOBBY_NOT_AUTHORIZED)
-        return
+        return client.send(CMD.LOBBY_NOT_AUTHORIZED)
     }
     gameManager.addClientGroup(lobby.getClients())
     lobby.getClients().forEach(client => {

@@ -19,6 +19,7 @@
     "dependencies": {
         "bytebuffer": "^5.0.1",
         "chalk": "^2.4.1",
+        "dlv": "^1.1.2",
         "escape-regexp": "^0.0.1",
         "lodash": "^4.17.10",
         "mongoose": "^5.0.17",

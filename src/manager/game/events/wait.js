@@ -31,11 +31,12 @@ module.exports = (client, data) => {
     delete data.flag
     delete data.name
 
+    // mark client order
     const group = gameManager.getGroupByClientId(client.clientId)
+    const clients = group.clients
     if (order && !group.order.includes(client)) {
         group.order.push(client)
     }
-    const clients = group.clients
     const shouldContinue = clients.every(
         client => client.getFlag(flag) === true
     )

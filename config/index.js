@@ -6,4 +6,7 @@ module.exports = {
     port: 3738,
 
     maxLobbyPlayers: 8,
+    globalData: {
+        version: '2.0.0',
+    },
 }
