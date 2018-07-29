@@ -4,11 +4,8 @@
  * MIT Licensed
  */
 
-/**
- * Expose
- */
-
-module.exports = userPlugin
+const bcrypt = require('bcrypt')
+const saltRounds = 10
 
 /**
  * User plugin
@@ -32,18 +29,7 @@ function userPlugin(schema, options) {
      */
 
     schema.methods.authenticate = function(plainText) {
-        return this.encryptPassword(plainText) === this.hashed_password
-    }
-
-    /**
-     * Create password salt
-     *
-     * @return {String}
-     * @api private
-     */
-
-    schema.methods.makeSalt = function() {
-        return Math.round(new Date().valueOf() * Math.random()) + ''
+        return bcrypt.compareSync(plainText, this.hashed_password)
     }
 
     /**
@@ -56,10 +42,8 @@ function userPlugin(schema, options) {
 
     schema.methods.encryptPassword = function(password) {
         if (!password) return ''
-        return crypto
-            .createHmac('sha1', this.salt)
-            .update(password)
-            .digest('hex')
+
+        return bcrypt.hashSync(password, saltRounds)
     }
 
     /**
@@ -136,8 +120,8 @@ function userPlugin(schema, options) {
         var select = options.select || ''
 
         this.find(criteria)
-            .select(options.select)
-            .populate(options.populate)
+            .select(select)
+            .populate(populate)
             .sort(sort)
             .limit(limit)
             .skip(limit * page)
@@ -156,7 +140,6 @@ function userPlugin(schema, options) {
         .virtual('password')
         .set(function(password) {
             this._password = password
-            this.salt = this.makeSalt()
             this.hashed_password = this.encryptPassword(password)
         })
         .get(function() {
@@ -192,3 +175,9 @@ function userPlugin(schema, options) {
         return hashed_password.length
     }, 'Please provide a password')
 }
+
+/**
+ * Expose
+ */
+
+module.exports = userPlugin

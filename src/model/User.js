@@ -18,14 +18,13 @@ const UserSchema = new Schema({
     },
     email: { type: String, default: '' },
     hashed_password: { type: String, default: '' },
-    salt: { type: String, default: '' },
     data: {
         type: Object,
         default: {},
     },
 })
 
-UserSchema.plugin(userPlugin, {})
+UserSchema.plugin(userPlugin)
 
 mongoose.model('User', UserSchema)
 

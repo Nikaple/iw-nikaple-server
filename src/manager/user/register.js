@@ -29,7 +29,7 @@ module.exports = (client, data) => {
             if (user) {
                 throw new Error('username_exists')
             }
-            return new User({ name, password, skipValidation: true }).save()
+            return new User({ name, password }).save()
         })
         .then(newUser => {
             client.clientId = newUser._id.toString()
