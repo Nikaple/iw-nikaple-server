@@ -53,11 +53,10 @@ class SyncServer {
         client.set('udpIp', address)
         client.set('udpPort', port)
         debugLog(`Init udp connection... client address is ${address}:${port}`)
-        const msg = Buffer.alloc(4)
+        const msg = Buffer.alloc(2)
         // length
-        msg.writeUInt16LE(4)
-        msg.writeUInt8(CMD.UDP_SUCCESS, 2)
-        msg.writeUInt8(initTimes, 3)
+        msg.writeUInt8(CMD.UDP_SUCCESS)
+        msg.writeUInt8(initTimes, 1)
         this.directSend(msg, port, address)
     }
 
@@ -135,7 +134,9 @@ class SyncServer {
     }
 
     directSend(msg, port, ip) {
-        this.server.send(msg, port, ip, () => {
+        const lengthBuffer = Buffer.alloc(2)
+        lengthBuffer.writeInt16LE(msg.length + 2)
+        this.server.send(Buffer.concat([lengthBuffer, msg]), port, ip, () => {
             debugLog(
                 chalk.greenBright(`Message sent to ${ip}:${port}! msg: %j`),
                 msg.toJSON().data
