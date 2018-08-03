@@ -2,7 +2,8 @@ version: '2'
 
 services:
   server:
-    image: nikaple/iw-nikaple-server
+    # image: nikaple/iw-nikaple-server
+    build: .
     ports:
       - "3738:3738/tcp"
       - "3738:3738/udp"
@@ -15,5 +16,3 @@ services:
     image: registry.docker-cn.com/library/mongo
     volumes:
       - ./data:/data/db
-    ports:
-      - "27017:27017"
