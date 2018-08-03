@@ -136,7 +136,8 @@ class SyncServer {
     directSend(msg, port, ip) {
         const lengthBuffer = Buffer.alloc(2)
         lengthBuffer.writeInt16LE(msg.length + 2)
-        this.server.send(Buffer.concat([lengthBuffer, msg]), port, ip, () => {
+        msg = Buffer.concat([lengthBuffer, msg])
+        this.server.send(msg, port, ip, () => {
             debugLog(
                 chalk.greenBright(`Message sent to ${ip}:${port}! msg: %j`),
                 msg.toJSON().data
