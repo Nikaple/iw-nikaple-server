@@ -30,6 +30,7 @@ class SyncServer {
                 'utf-8',
                 ByteBuffer.LITTLE_ENDIAN
             )
+            const bufferLength = buffer.readUint16()
             const firstByte = buffer.readUint8()
             const command = firstByte >> 4
             const scope = firstByte & 15
@@ -52,9 +53,11 @@ class SyncServer {
         client.set('udpIp', address)
         client.set('udpPort', port)
         debugLog(`Init udp connection... client address is ${address}:${port}`)
-        const msg = Buffer.alloc(2)
-        msg.writeUInt8(CMD.UDP_SUCCESS)
-        msg.writeUInt8(initTimes, 1)
+        const msg = Buffer.alloc(4)
+        // length
+        msg.writeUInt16LE(4)
+        msg.writeUInt8(CMD.UDP_SUCCESS, 2)
+        msg.writeUInt8(initTimes, 3)
         this.directSend(msg, port, address)
     }
 
@@ -70,7 +73,7 @@ class SyncServer {
             return
         }
         currentClient.set('currentRoom', room)
-        const message = buffer.slice(1).toBuffer()
+        const message = buffer.slice(3).toBuffer()
         this.broadcast({
             group: currentGroup,
             client: currentClient,
