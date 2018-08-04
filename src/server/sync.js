@@ -73,10 +73,12 @@ class SyncServer {
         }
         currentClient.set('currentRoom', room)
         const message = buffer.slice(3).toBuffer()
+        const lengthBuffer = Buffer.alloc(1)
+        lengthBuffer.writeUInt8(message.length + 1)
         this.broadcast({
             group: currentGroup,
             client: currentClient,
-            message,
+            message: Buffer.concat([lengthBuffer, message]),
             filter: getFilter(currentClient)[scope],
         })
     }
