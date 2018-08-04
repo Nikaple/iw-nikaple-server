@@ -20,7 +20,7 @@ module.exports = (client, { lobbyId, password }) => {
     })
 
     if (lobby === null) {
-        return client.send(CMD.LOBBY_NOT_EXISTS)
+        return
     }
 
     client.set('currentLobbyId', lobby.id)
