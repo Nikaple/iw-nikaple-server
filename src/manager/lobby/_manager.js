@@ -18,7 +18,8 @@ class LobbyManager extends ClientManager {
      * @memberof LobbyManager
      */
     getAvailableIndex() {
-        this.currentIndex += 1 + Math.floor(20 * Math.random())
+        this.currentIndex =
+            this.currentIndex + 1 + Math.floor(20 * Math.random())
         return this.currentIndex
     }
 
