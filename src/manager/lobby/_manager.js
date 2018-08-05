@@ -19,7 +19,7 @@ class LobbyManager extends ClientManager {
      */
     getAvailableIndex() {
         const rnd = 1 + Math.floor(3 * Math.random())
-        this.currentIndex = (this.currentIndex + rnd) % 9000 + 1000
+        this.currentIndex = Math.max((this.currentIndex + rnd) % 9000, 1000)
         return this.currentIndex
     }
 
