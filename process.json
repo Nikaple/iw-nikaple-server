@@ -8,7 +8,7 @@
             "cwd": "./",
             "env": {},
             "exec_mode": "cluster",
-            "instances": "max",
+            "instances": "1",
             "env_production": {
                 "NODE_ENV": "production"
             },

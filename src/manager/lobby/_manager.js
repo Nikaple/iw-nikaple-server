@@ -7,7 +7,7 @@ const config = require('../../../config')
 class LobbyManager extends ClientManager {
     constructor() {
         super()
-        this.currentIndex = 1275
+        this.currentIndex = 100
         this.lobbies = {}
     }
 
@@ -19,7 +19,7 @@ class LobbyManager extends ClientManager {
      */
     getAvailableIndex() {
         this.currentIndex =
-            this.currentIndex + 1 + Math.floor(20 * Math.random())
+            this.currentIndex + 1 + Math.floor(2 * Math.random())
         return this.currentIndex
     }
 
