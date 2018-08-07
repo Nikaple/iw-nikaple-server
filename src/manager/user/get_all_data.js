@@ -42,6 +42,7 @@ module.exports = (client, { keys, id, options = '' }) => {
             } = dataOptions
             const isDescending = order === 'desc' ? 1 : -1
             const data = users
+                .filter(user => user.data[sortBy] != null)
                 .map(user => ({
                     name: user.name,
                     ...pick(user.data, dataKeys),
