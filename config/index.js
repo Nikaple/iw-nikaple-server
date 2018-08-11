@@ -7,6 +7,6 @@ module.exports = {
 
     maxLobbyPlayers: 8,
     globalData: {
-        version: '1.10.2',
+        version: '2.0.0',
     },
 }
