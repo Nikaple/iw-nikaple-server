@@ -14,7 +14,7 @@ class GameManager extends ClientManager {
     }
 
     getAvailableIndex() {
-        this.currentGroupIndex++
+        this.currentGroupIndex = (this.currentGroupIndex + 1) % 10000
         return this.currentGroupIndex
     }
 
