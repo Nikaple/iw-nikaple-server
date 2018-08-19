@@ -1,4 +1,4 @@
-const lobbyManager = require('./_manager')
+const userManager = require('./_manager')
 /**
  *
  *
@@ -7,8 +7,8 @@ const lobbyManager = require('./_manager')
  * @param {string} data.cmd
  */
 module.exports = (client, data) => {
-    lobbyManager.broadcast('chat', {
-        from: data.name,
+    userManager.broadcast('chat', {
+        from: client.clientName,
         msg: data.msg,
     })
 }
