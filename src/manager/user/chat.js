@@ -17,15 +17,13 @@ module.exports = (client, { msg, scope, lobbyId }) => {
         from: client.clientName,
     }
     if (scope === 'user') {
-        userManager.broadcast(CMD.CHAT, response)
+        userManager.broadcast(CMD.CHAT, response, currentClient => currentClient !== client)
         return
     }
     if (scope === 'lobby') {
         const lobby = lobbyManager.getLobbyById(lobbyId, true)
         if (lobby) {
-            lobby.getClients().forEach(client => {
-                client.send(CMD.CHAT, response)
-            })
+            lobby.broadcast(CMD.CHAT, response, currentClient => currentClient !== client)
         }
     }
     if (scope === 'game') {

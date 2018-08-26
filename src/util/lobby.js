@@ -16,16 +16,18 @@ class Lobby {
         return [this.host, ...this.guests]
     }
 
-    broadcast(cmd, data) {
+    broadcast(cmd, data, filter = () => true) {
         if (typeof data === 'undefined') {
             data = cmd
         } else {
             data.cmd = cmd
         }
 
-        this.getClients().forEach(client => {
-            client.send(data)
-        })
+        this.getClients()
+            .filter(filter)
+            .forEach(client => {
+                client.send(data)
+            })
     }
 }
 
