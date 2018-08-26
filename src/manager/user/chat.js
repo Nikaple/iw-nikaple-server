@@ -14,6 +14,7 @@ const gameManager = require('../game/_manager')
 module.exports = (client, { msg, scope, lobbyId }) => {
     const response = {
         msg,
+        scope,
         from: client.clientName,
     }
     if (scope === 'user') {
