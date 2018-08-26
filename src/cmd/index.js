@@ -63,6 +63,9 @@ module.exports = {
     // 玩家掉线
     PLAYER_DROP: 'player_drop',
 
+    // 聊天
+    CHAT: 'chat',
+
     // 未知错误
     UNKNOWN_ERROR: 'unknown_error',
 }

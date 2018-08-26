@@ -13,7 +13,7 @@ const gameManager = require('../game/_manager')
  * @param {string} data.cmd
  */
 module.exports = (client, { lobbyId }) => {
-    const lobby = lobbyManager.lobbies[lobbyId]
+    const lobby = lobbyManager.getLobbyById(lobbyId, true)
     if (!lobby) {
         return client.send(CMD.LOBBY_NOT_EXISTS)
     }

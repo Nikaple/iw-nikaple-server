@@ -150,7 +150,7 @@ class LobbyManager extends ClientManager {
      * Gets the lobby by lobby id
      *
      * @param {Client} lobbyId
-     * @returns
+     * @returns { Lobby }
      * @memberof LobbyManager
      */
     getLobbyById(lobbyId, isSilent) {

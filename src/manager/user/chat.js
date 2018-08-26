@@ -1,4 +1,9 @@
+const { Client } = require('../../../lib/patchwire')
+const CMD = require('../../cmd')
 const userManager = require('./_manager')
+const lobbyManager = require('../lobby/_manager')
+const gameManager = require('../game/_manager')
+
 /**
  *
  *
@@ -6,9 +11,24 @@ const userManager = require('./_manager')
  * @param {object} data
  * @param {string} data.cmd
  */
-module.exports = (client, data) => {
-    userManager.broadcast('chat', {
+module.exports = (client, { msg, scope, lobbyId }) => {
+    const response = {
+        msg,
         from: client.clientName,
-        msg: data.msg,
-    })
+    }
+    if (scope === 'user') {
+        userManager.broadcast(CMD.CHAT, response)
+        return
+    }
+    if (scope === 'lobby') {
+        const lobby = lobbyManager.getLobbyById(lobbyId, true)
+        if (lobby) {
+            lobby.getClients().forEach(client => {
+                client.send(CMD.CHAT, response)
+            })
+        }
+    }
+    if (scope === 'game') {
+        gameManager.groupBroadcast(client, CMD.CHAT, response)
+    }
 }
