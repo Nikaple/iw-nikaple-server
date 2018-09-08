@@ -15,4 +15,4 @@ COPY . /app
 EXPOSE 3738/tcp
 EXPOSE 3738/udp
 
-CMD ["npm", "run", "docker:dev"]
+CMD ["npm", "run", "prod"]
