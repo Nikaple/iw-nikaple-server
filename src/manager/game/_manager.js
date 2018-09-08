@@ -74,18 +74,23 @@ class GameManager extends ClientManager {
      */
     startHeartbeat(client) {
         client.set('heartbeat', 0)
+        // 清除遗留的心跳计时器
+        if (client.get('heartbeat_timer')) {
+            clearInterval(client.get('heartbeat_timer'))
+        }
         // 3 秒发送一个即可，3 次超时判定为断线
         const timer = setInterval(() => {
             const currentHeartbeatCount = client.get('heartbeat')
             if (currentHeartbeatCount >= 3) {
                 this.removePlayer(client)
-                return clearInterval(timer);
+                return clearInterval(client.get('heartbeat_timer'));
             }
             client.send(CMD.HEARTBEAT, {
                 idx: currentHeartbeatCount
             })
             client.set('heartbeat', currentHeartbeatCount + 1)
         }, 3000)
+        client.set('heartbeat_timer', timer)
     }
 
 
