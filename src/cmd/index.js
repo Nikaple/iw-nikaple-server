@@ -1,3 +1,6 @@
+/**
+ * 定义所有发送给客户端的事件
+ */
 module.exports = {
     // 已连接
     CONNECTED: 'connected',
@@ -59,6 +62,8 @@ module.exports = {
     GAME_START: 'game_start',
     // 同步
     GAME_SYNC: 'sync',
+    // 心跳包
+    HEARTBEAT: 'heartbeat',
 
     // 玩家掉线
     PLAYER_DROP: 'player_drop',

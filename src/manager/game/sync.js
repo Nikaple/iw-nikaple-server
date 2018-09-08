@@ -1,5 +1,5 @@
 // This is the handler for game sync
-
+const { Client } = require('../../../lib/patchwire')
 const path = require('path')
 
 const gameManager = require('./_manager')

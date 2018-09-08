@@ -5,8 +5,6 @@ const User = mongoose.model('User')
 const pick = require('lodash/pick')
 const isEmpty = require('lodash/isEmpty')
 const compact = require('lodash/compact')
-const isString = require('lodash/isString')
-
 const extractKey = (data, key) => {
     if (key === 'updateAt') {
         return data[key] ? Date.parse(data[key]) : 0

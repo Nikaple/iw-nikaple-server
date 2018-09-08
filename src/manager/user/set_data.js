@@ -16,7 +16,10 @@ module.exports = (client, { id, data }) => {
             user.data = {
                 ...user.data,
                 ...data,
-                updateAt: new Date().toLocaleString(),
+                updateAt: new Date().toLocaleString()
+            }
+            if (!user.data.createAt) {
+                user.data.createAt = new Date().toLocaleString()
             }
             return user.save()
         })

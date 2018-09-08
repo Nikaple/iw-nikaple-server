@@ -1,4 +1,4 @@
-const { ClientManager } = require('../../../lib/patchwire')
+const { ClientManager, Client } = require('../../../lib/patchwire')
 const ERROR = require('../../error')
 const CMD = require('../../cmd')
 const config = require('../../../config')
@@ -13,11 +13,24 @@ class GameManager extends ClientManager {
         this.clientAddressMap = {}
     }
 
+    /**
+     * 生成游戏编号
+     *
+     * @returns {number} 
+     * @memberof GameManager
+     */
     getAvailableIndex() {
         this.currentGroupIndex = (this.currentGroupIndex + 1) % 10000
         return this.currentGroupIndex
     }
 
+    /**
+     * 添加一个游戏组
+     *
+     * @param {{}} groupData
+     * @returns
+     * @memberof GameManager
+     */
     addGroup(groupData) {
         const groupIndex = this.getAvailableIndex()
         this.groups[groupIndex] = {
@@ -28,6 +41,12 @@ class GameManager extends ClientManager {
         return groupIndex
     }
 
+    /**
+     * 将所有客户端拉入一个游戏组
+     *
+     * @param {Client[]} clients
+     * @memberof GameManager
+     */
     addClientGroup(clients) {
         const groupIndex = this.addGroup({ clients })
         clients.forEach((client, index) => {
@@ -43,17 +62,65 @@ class GameManager extends ClientManager {
                 players: clients.map(client => client.clientName),
                 idx: index + 1,
             })
+            this.startHeartbeat(client);
         })
     }
 
+    /**
+     * 开始给客户端发送心跳包
+     *
+     * @param {Client} client
+     * @memberof GameManager
+     */
+    startHeartbeat(client) {
+        client.set('heartbeat', 0)
+        // 3 秒发送一个即可，3 次超时判定为断线
+        const timer = setInterval(() => {
+            const currentHeartbeatCount = client.get('heartbeat')
+            if (currentHeartbeatCount >= 3) {
+                this.removePlayer(client)
+                return clearInterval(timer);
+            }
+            client.send(CMD.HEARTBEAT, {
+                idx: currentHeartbeatCount
+            })
+            client.set('heartbeat', currentHeartbeatCount + 1)
+        }, 3000)
+    }
+
+
+    /**
+     * 找到客户端位于哪个组中
+     *
+     * @param {string} clientId
+     * @returns
+     * @memberof GameManager
+     */
     getGroupByClientId(clientId) {
         return this.groups[this.clientIdMap[clientId]]
     }
 
+    /**
+     * 根据 ip 找到对应的组
+     *
+     * @param {string} ip
+     * @param {string} port
+     * @returns
+     * @memberof GameManager
+     */
     getGroupByAddress(ip, port) {
         return this.groups[this.clientAddressMap[`${ip}:${port}`]]
     }
 
+    /**
+     * 组内广播消息
+     *
+     * @param {Client} currentClient
+     * @param {string} cmd
+     * @param {{}} data
+     * @param {() => boolean} filter
+     * @memberof GameManager
+     */
     groupBroadcast(currentClient, cmd, data, filter) {
         if (typeof data === 'undefined') {
             data = cmd
@@ -77,13 +144,19 @@ class GameManager extends ClientManager {
         })
     }
 
+    /**
+     * 将玩家从组中移除，并向其他人发送掉线事件
+     *
+     * @param {*} client
+     * @memberof GameManager
+     */
     removePlayer(client) {
         if (!client) {
             return
         }
         gameManager.groupBroadcast(client, CMD.PLAYER_DROP, {
             name: client.clientName,
-        })
+        }, () => true)
         const currentGroup = gameManager.getGroupByClientId(client.clientId)
         if (!currentGroup) {
             return

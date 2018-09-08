@@ -13,6 +13,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Finds an empty lobby index
+     * 生成房间编号
      *
      * @returns
      * @memberof LobbyManager
@@ -25,6 +26,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Adds a lobby to current manager
+     * 在房间管理器中添加一个房间
      *
      * @memberof LobbyManager
      */
@@ -40,6 +42,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Check if the client is logged in
+     * 检查玩家是否已登录
      *
      * @param {Client} client
      * @returns
@@ -55,6 +58,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Check is password is same as lobby's password
+     * 检查房间密码是否正确
      *
      * @param {Client} client
      * @param {Lobby} lobby
@@ -72,6 +76,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Check if current client is in the lobby before leave
+     * 在离开房间之前，需要检查玩家是否在房间中
      *
      * @param {Client} client
      * @param {Lobby} lobby
@@ -88,6 +93,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Check if current client is in the lobby before join
+     * 不能重复加入房间
      *
      * @param {Client} client
      * @param {Lobby} lobby
@@ -104,6 +110,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Check is current lobby is full
+     * 房间已满
      *
      * @param {Client} client
      * @param {Lobby} lobby
@@ -120,6 +127,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Remove a client
+     * 移除玩家
      *
      * @param {Client} clients
      * @memberof LobbyManager
@@ -130,6 +138,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Gets the current lobby id of client
+     * 获取当前玩家的房间号
      *
      * @param {Client} client
      * @returns
@@ -148,6 +157,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Gets the lobby by lobby id
+     * 根据房间号获取房间实例
      *
      * @param {Client} lobbyId
      * @returns { Lobby }
@@ -166,6 +176,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Create a lobby
+     * 创建房间
      *
      * @param {Client} client
      * @param {Object} { name, password, client }
@@ -185,6 +196,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Join a lobby
+     * 加入房间
      *
      * @param {Client} client
      * @param {Object} { id, password, guest }
@@ -207,6 +219,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Leave a lobby
+     * 离开房间
      *
      * @param {Client} client
      * @param {Boolean} isSilent
@@ -233,6 +246,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Leave all lobbies of a client without the lobby id
+     * 将指定玩家从所有房间中剔除
      *
      * @param {Client} client
      * @memberof LobbyManager
@@ -254,6 +268,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Dismiss a lobby, same as leaveLobbyHost
+     * 解散房间
      *
      * @param {Lobby} lobby
      * @param {Boolean} isSilent
@@ -266,6 +281,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Leave the lobby when current client is host
+     * 解散房间
      *
      * @param {Lobby} lobby
      * @param {Boolean} isSilent
@@ -292,6 +308,7 @@ class LobbyManager extends ClientManager {
 
     /**
      * Leave the lobby when current client is guest
+     * 非房主离开房间
      *
      * @param {Client} client
      * @param {Lobby} lobby
