@@ -1,5 +1,7 @@
 # iw-nikaple-server
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Nikaple/iw-nikaple-server.svg)](https://greenkeeper.io/)
+
 ## 部署
 
 1.  确认你拥有公网 IP
