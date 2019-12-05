@@ -1,0 +1,10 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "lib/patchwire/package.json",
+        "package.json"
+      ]
+    }
+  }
+}
