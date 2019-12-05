@@ -13,16 +13,16 @@
     },
     "license": "ISC",
     "devDependencies": {
-        "nodemon": "^1.17.3",
-        "prettier": "1.12.1"
+        "nodemon": "^2.0.1",
+        "prettier": "1.19.1"
     },
     "dependencies": {
         "bcrypt": "^3.0.0",
         "bytebuffer": "^5.0.1",
-        "chalk": "^2.4.1",
+        "chalk": "^3.0.0",
         "dlv": "^1.1.2",
         "escape-regexp": "^0.0.1",
-        "lodash": "^4.17.10",
+        "lodash": "4.17.15",
         "mongoose": "^5.0.17",
         "mongoose-user": "^0.0.1"
     }
